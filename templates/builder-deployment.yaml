@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kinto.builder.fullname" . }}
+  labels:
+    app: {{ template "kinto.fullname" . }}
+    chart: {{ template "kinto.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ template "kinto.builder.fullname" . }}
+spec:
+  replicas: {{ .Values.builder.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "kinto.fullname" . }}
+      release: {{ .Release.Name }}
+      component: {{ template "kinto.builder.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kinto.fullname" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "kinto.builder.fullname" . }}
+    spec:
+      serviceAccountName: {{ template "kinto.builder.fullname" . }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+     {{- end }}
+      containers:
+      - name: main
+        image: {{ .Values.repo }}/{{ .Values.builder.image }}:{{ .Values.builder.tag }}
+        imagePullPolicy: {{ .Values.builder.imagePullPolicy }}
+        env:
+        - name: SERVER_PORT
+          value: "{{ .Values.builder.port }}"
+        - name: PROXLESS_FQDN
+          value: kinto-proxless.{{ .Release.Namespace }}.svc.cluster.local
+        - name: WORKFLOW_ENGINE
+          value: "argo"
+        - name: KINTO_AGENT_HOST_NAME
+          value: {{ template "kinto.core.fullname" . }}:{{ .Values.core.grpc.port }}
+        - name: KINTO_AGENT_OVER_TLS
+          value: "false"
+        - name: ARGO_WORKFLOW_DOCKER_SECRET
+          value: {{ template "kinto.workflow.fullname" . }}-docker
+        - name: ARGO_WORKFLOW_SERVICE_ACCOUNT
+          value: {{ template "kinto.workflow.fullname" . }}
+        - name: ARGO_WORKFLOW_MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: kinto-minio
+              key: accesskey
+        - name: ARGO_WORKFLOW_MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: kinto-minio
+              key: secretkey
+        - name: ARGO_WORKFLOW_MAIN_IMAGE
+          value: "{{ .Values.repo }}/{{ .Values.builder.workflow.mainImage }}:{{ .Values.builder.tag }}"
+        - name: ARGO_WORKFLOW_CLI_IMAGE
+          value: "{{ .Values.repo }}/{{ .Values.builder.workflow.cliImage }}:{{ .Values.builder.tag }}"
+        - name: ARGO_WORKFLOW_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- range $key, $val := .Values.builder.env }}
+        - name: {{ $key }}
+          value: "{{ $val }}"
+        {{- end }}
+        resources:
+          {{- toYaml .Values.builder.resources | nindent 10 }}
+        ports:
+        - containerPort: {{ .Values.builder.port }}
+          name: "http"
+          protocol: TCP
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.builder.port }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.builder.port }}

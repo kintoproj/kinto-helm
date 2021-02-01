@@ -1,0 +1,27 @@
+{{- if .Values.common.ssl.enabled }}
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: {{ template "kinto.common.fullname" . }}
+  labels:
+    app: {{ template "kinto.fullname" . }}
+    chart: {{ template "kinto.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ template "kinto.common.fullname" . }}
+spec:
+  acme:
+    email: {{ .Values.common.ssl.issuer.email }}
+    server: {{ .Values.common.ssl.issuer.server }}
+    privateKeySecretRef:
+      name: {{ template "kinto.common.fullname" . }}-issuer-account-key
+    solvers:
+    {{ if .Values.common.ssl.issuer.solver.cloudflare }}
+    - dns01:
+        cloudflare:
+          email: {{ .Values.common.ssl.issuer.solver.cloudflare.email }}
+          apiTokenSecretRef:
+            name: {{ template "kinto.common.fullname" . }}
+            key: cloudflareApiToken
+    {{- end }}
+{{- end }}

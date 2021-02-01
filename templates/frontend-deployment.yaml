@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kinto.frontend.fullname" . }}
+  labels:
+    app: {{ template "kinto.fullname" . }}
+    chart: {{ template "kinto.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ template "kinto.frontend.fullname" . }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "kinto.fullname" . }}
+      release: {{ .Release.Name }}
+      component: {{ template "kinto.frontend.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kinto.fullname" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "kinto.frontend.fullname" . }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
+      containers:
+      - name: main
+        image: {{ .Values.repo }}/{{ .Values.frontend.image }}
+        imagePullPolicy: {{ .Values.frontend.imagePullPolicy }}
+        env:
+        {{- if .Values.common.ssl.enabled }}
+        - name: REACT_APP_SERVER_URL
+          value: https://{{ .Values.core.ingress.grpcWeb.host }}
+        {{- end }}
+        {{- if .Values.frontend.ingress.enabled }}
+        - name: REACT_APP_SITE_HOST
+          value: "{{ .Values.frontend.ingress.host }}"
+        {{- end }}
+        {{- range $key, $val := .Values.frontend.env }}
+        - name: {{ $key }}
+          value: "{{ $val }}"
+        {{- end }}
+        resources:
+          {{- toYaml .Values.frontend.resources | nindent 10 }}
+        ports:
+        - containerPort: {{ .Values.frontend.port }}
+          name: "http"
+          protocol: TCP
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.frontend.port }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.frontend.port }}

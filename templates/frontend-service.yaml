@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kinto.frontend.fullname" . }}
+  labels:
+    app: {{ template "kinto.fullname" . }}
+    chart: {{ template "kinto.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ template "kinto.frontend.fullname" . }}
+spec:
+  ports:
+  - name: "http"
+    port: {{ .Values.frontend.port }}
+    protocol: TCP
+  selector:
+    app: {{ template "kinto.fullname" . }}
+    component: {{ template "kinto.frontend.fullname" . }}
+  type: "ClusterIP"

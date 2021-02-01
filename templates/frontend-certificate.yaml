@@ -1,0 +1,19 @@
+{{- if .Values.common.ssl.enabled }}
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ template "kinto.frontend.fullname" . }}
+  labels:
+    app: {{ template "kinto.fullname" . }}
+    chart: {{ template "kinto.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ template "kinto.frontend.fullname" . }}
+spec:
+  secretName: {{ template "kinto.frontend.fullname" . }}-ssl
+  issuerRef:
+    name: {{ template "kinto.common.fullname" . }}
+    kind: ClusterIssuer
+  dnsNames:
+  - {{ .Values.frontend.ingress.host }}
+{{- end }}

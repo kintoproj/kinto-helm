@@ -1,0 +1,19 @@
+{{- if .Values.common.ssl.enabled }}
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: common-wildcard-cert
+  labels:
+    app: {{ template "kinto.fullname" . }}
+    chart: {{ template "kinto.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ template "kinto.common.fullname" . }}
+spec:
+  secretName: common-wildcard-cert
+  issuerRef:
+    name: {{ template "kinto.common.fullname" . }}
+    kind: ClusterIssuer
+  dnsNames:
+  - "{{ .Values.common.ssl.certificate.dnsName }}"
+{{- end }}
