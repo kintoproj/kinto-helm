@@ -3,22 +3,30 @@
 # Beware when changing values here. You should know what you are doing!
 # Access the values with {{ .Values.key.subkey }}
 
+## You likely don't want to touch this unless you are using your own kintohub images
+## This is the name of the registry in docker hub
+## ie: kintohub/kinto-core:latest
 repo: kintohub
 
 common:
   ssl:
-    enabled: true
-
+    ## Cert Manager concept: https://cert-manager.io/docs/concepts/issuer/
+    ## This issuer is cluster wide and will be used for every cert generated in KintoHub
+    ## Issuer only works with cloudflare at the moment, please create an issue or open a PR if you want to add more
+    ## Here are the list of providers supported: https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers    
     issuer:
-      email: devaccounts@kintohub.com
-      server: https://acme-v02.api.letsencrypt.org/directory
+      email: benjamin.apprederisse@gmail.com ## TO BE CHANGED - this email will be used for every certificate generated
+      server: https://acme-v02.api.letsencrypt.org/directory ## let's encrypt server used (this is the production one)
       solver:
         cloudflare:
-          email: devaccounts@kintohub.com
-          cloudflareApiToken: j5Z0t1sBXDzGiOlUNtHmr2POyXUhatdDD_uk8XhC ## https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
+          email: benjamin.apprederisse@gmail.com ## TO BE CHANGED - your cloudflare username account
+          ## Generate a token using https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
+          cloudflareApiToken: j5Z0t1sBXDzGiOlUNtHmr2POyXUhatdDD_uk8XhC ## TO BE CHANGED
 
     certificate:
-      dnsName: "*.oss.kintohub.net"
+      ## Common wildcard certficate used for all web servers exposed external on kintohub
+      ## ie: the url to access your service will be https://[something].oss.kintohub.net
+      dnsName: "*.oss.kintohub.net" ## TO BE CHANGED
 
 core:
   replicas: 1
@@ -33,15 +41,20 @@ core:
     port: 8090
 
   ingress:
+    ## Disable this if you don't want kinto-core to be exposed on internet
     enabled: true
     grpc:
-      host: core.oss.kintohub.net
+      ## External host name used by kinto-cli to connect to kinto-core
+      host: core.oss.kintohub.net ## TO BE CHANGED
     grpcWeb:
-      host: core-web.oss.kintohub.net
+      ## External host name used by kinto-dashboard to connect to kinto-core
+      host: core-web.oss.kintohub.net ## TO BE CHANGED
 
   env:
     LOG_LEVEL: DEBUG
-    KINTO_DOMAIN: "oss.kintohub.net"
+    ## All web servers will be exposed with a subdomain of KINTO_DOMAIN
+    ## must be the same as `common.ssl.certificate.dnsName` minus `*.`
+    KINTO_DOMAIN: "oss.kintohub.net" ## TO BE CHANGED
   
   resources: {}
 
@@ -57,28 +70,35 @@ builder:
   env:
     LOG_LEVEL: DEBUG
 
-    IMAGE_REGISTRY_HOST: eu.gcr.io/kinto-development
+    ## Image Registry used to push images that are built using KintoHub
+    ## In order for kintohub to gain access over this registry, you must configure `builder.workflow.docker` correctly.
+    IMAGE_REGISTRY_HOST: eu.gcr.io/kinto-development ## TO BE CHANGED
 
     POLL_LOGS_INTERVAL_SECONDS: 1
     USER_FRIENDLY_BUILD_LOGS_ENABLED: false 
 
+    ## Timeout in seconds after which the workflow fails
     WORKFLOW_TIMEOUT: 1800
 
-    ARGO_WORKFLOW_TTL_SECONDS: 120
+    ## Configuration for Argo Workflow. KintoHub generated Argo Workflow in Kubernetes to build and deploy your services.
+    ## Therefore, workflows must be configured according to what you build.
+    ARGO_WORKFLOW_TTL_SECONDS: 120 ## After completion, Argo automatically clean up kubernetes and delete the workflow after ARGO_WORKFLOW_TTL_SECONDS in seconds
     ARGO_WORKFLOW_MINIO_HOST: kinto-minio:9000
     ARGO_WORKFLOW_MINIO_BUCKET: argo-artifacts
     ARGO_WORKFLOW_IMAGE_PULL_POLICY: IfNotPresent
-    ARGO_WORKFLOW_VOLUME_SIZE: 1Gi
+    ARGO_WORKFLOW_VOLUME_SIZE: 1Gi ## each workflow used a private volume.
     ARGO_WORKFLOW_MEMORY_LIMIT: 4Gi
     ARGO_WORKFLOW_CPU_LIMIT: 2
 
   resources: {}
 
   workflow:
-    mainImage: kinto-workflow-main
-    cliImage: kinto-workflow-cli
+    mainImage: kinto-workflow-main ## don't add tag here, it is dependant of `builder.tag`
+    cliImage: kinto-workflow-cli ## don't add tag here, it is dependant of `builder.tag`
 
-    docker:
+    ## Docker registry to access `builder.env.IMAGE_REGISTRY_HOST`
+    ## This will create a type `kubernetes.io/dockerconfigjson` secret in kubernetes
+    docker: ## TO BE CHANGED
       registry: eu.gcr.io
       email: devaccounts@kintohub.com
       username: _json_key
@@ -95,10 +115,10 @@ builder:
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/temporary-gcs-admin%40kinto-development.iam.gserviceaccount.com"
 }'
 
-frontend:
+dashboard:
   replicas: 1
 
-  image: kinto-frontend:latest
+  image: kinto-dashboard:latest
   imagePullPolicy: Always
 
   port: 5000
@@ -106,14 +126,18 @@ frontend:
   resources: {}
 
   ingress:
+    ## Disable this if you don't want kinto-dashboard to be exposed on internet
     enabled: true
-    host: oss.kintohub.net
+    ## User will open this URL on their browser to access the dashboard
+    host: dashboard.oss.kintohub.net ## TO BE CHANGED
 
   env:
     REACT_APP_GRPC_WEB_HTTPS_ENABLED: true
-    REACT_APP_SLEEP_MODE_TTL_MINUTES: "10"
+    REACT_APP_SLEEP_MODE_TTL_MINUTES: "10" ## Default Time To Sleep for web servers configured with Sleep Mode enabled
     REACT_APP_LOCAL_STORAGE_VERSION: "20201124153800"
 
+## Configuration for nginx-ingress-controller
+## KintoHub as well as all your webservers with public access will be exposed throught this nginx controller
 nginx-ingress-controller:
   service:
     ##  PR : https://github.com/kintohub/kinto-kube-infra/pull/65
@@ -150,7 +174,10 @@ nginx-ingress-controller:
     enabled: false
   
   extraArgs:
-    default-ssl-certificate: "kintohub/common-wildcard-cert" ## /!\ CHANGE THIS IF NAMESPACE != "kintohub"
+    ## Wildcard certificate corresponding to `common.ssl.certificate`
+    ## All your webservers will use this certificate by default
+    ## /!\ CHANGE THIS IF NAMESPACE != "kintohub"
+    default-ssl-certificate: "kintohub/common-wildcard-cert"
 
   defaultBackend:
     replicaCount: 1
@@ -158,9 +185,10 @@ nginx-ingress-controller:
 
     resources: {}
 
+## Configuration for proxless
+## Proxless is used for Sleep mode
+## Reference: https://github.com/bappr/proxless
 proxless:
-  enabled: true
-
   port: 80
 
   image:
@@ -183,6 +211,8 @@ proxless:
   redis:
     enabled: false
 
+## Configuration for minio
+## Minio used to store the history of deployment logs
 minio:
   accessKey: "AKIAIOSFODNN7EXAMPLE"
   secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -202,8 +232,13 @@ minio:
     MINIO_API_READY_DEADLINE: "5s"
     MINIO_BROWSER: "on"
 
+
+
+## DON'T TOUCH ANYTHING BELOW THAT LINE
+## It will be deprecated and removed soon
+
 argo:
-  enabled: true
+  enabled: false
 
   installCRD: true
 
@@ -226,13 +261,13 @@ argo:
         name: kinto-minio
         key: secretkey
       insecure: true
-      bucket: argo-artifacts ## must be created before
+      bucket: argo-artifacts
       endpoint: kinto-minio:9000
     minio:
       install: false
 
 cert-manager:
-  enabled: true
+  enabled: false
 
   resources: {}
 

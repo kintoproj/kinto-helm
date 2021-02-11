@@ -38,9 +38,9 @@ spec:
           value: kinto-proxless.{{ .Release.Namespace }}.svc.cluster.local
         - name: WORKFLOW_ENGINE
           value: "argo"
-        - name: KINTO_AGENT_HOST_NAME
+        - name: KINTO_CORE_HOST_NAME
           value: {{ template "kinto.core.fullname" . }}:{{ .Values.core.grpc.port }}
-        - name: KINTO_AGENT_OVER_TLS
+        - name: KINTO_CORE_OVER_TLS
           value: "false"
         - name: ARGO_WORKFLOW_DOCKER_SECRET
           value: {{ template "kinto.workflow.fullname" . }}-docker
