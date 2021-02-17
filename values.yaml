@@ -99,7 +99,6 @@ builder:
     ## Docker registry to access `builder.env.IMAGE_REGISTRY_HOST`
     ## This will create a type `kubernetes.io/dockerconfigjson` secret in kubernetes
     docker: ## TO BE CHANGED
-      # Google Cloud Registry
       registry: eu.gcr.io
       email: devaccounts@kintohub.com
       username: _json_key
@@ -115,13 +114,6 @@ builder:
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/temporary-gcs-admin%40kinto-development.iam.gserviceaccount.com"
 }'
-      # ========================================
-      # Private Docker hub
-      # Create API token on dockerhub https://docs.docker.com/docker-hub/access-tokens/
-      # registry: docker.io
-      # email: admin@example.com
-      # username: admin
-      # password: [your-api-token-on-dockerhub]
 
 dashboard:
   replicas: 1
