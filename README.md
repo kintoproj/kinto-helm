@@ -19,11 +19,13 @@ The chart will do the following:
 
 ### Prerequisites
 
-- Cert Manager and Argo Workflow are cluster wide (they operate at a cluster level) and they have their own sets of Custom Resource Definition.  
+- [Cert Manager](https://cert-manager.io/docs/) and [Argo Workflow](https://github.com/argoproj/argo-workflows)are cluster wide (they operate at a cluster level) and they have their own sets of Custom Resource Definition.  
 If you already have your own versions of these tools running on your Kubernetes Cluster, don't run the commands below but go straight to [Install KintoHub](#install-kintohub). If KintoHub does not work with the version you installed, please create an issue.
 Notes: KintoHub has been test with cert-manager v0.15.0 and argo workflow 0.9.5.
-- You must have a domain name ready to be used. KintoHub only support Cloudflare at the moment, you can create a free account and transfert your domain ownership easily. Please create an issue if you want to add more.
+- You must have a domain name ready to be used. KintoHub only support Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more.
 - KintoHub does not support its private docker registry yet. You must use an external one (docker hub, gcr, ecr, acr, etc.).
+- You must have [Helm](https://helm.sh/) (v3.0 or above) installed. Cert Manager/Argo/Kintohub are all installed via Helm Charts.
+- Kubernetes cluster with at least a node having 4GB or more memory
 
 #### Install Cert-Manager
 
@@ -97,13 +99,18 @@ argo-workflow-controller-b68ffccb5-jx7vq   1/1     Running   0          62s
 
 ### Install KintoHub
 
-Check the [values.yaml](./values.yaml) file and adapt it accordingly for your own need.
+Check out this repository and adapt the [values.yaml](./values.yaml) file accordingly for your own need.
 Checks specifically for any `## TO BE CHANGED` pattern in it and change the values.
 Notes: you can also provide the parameters directly into the command line using `--set`.
 
 Run
 
 ```sh
+# Check out the repository and edit the values.yaml
+git clone https://github.com/kintoproj/kinto-helm.git
+vi values.yaml
+
+# install the chart via helm, it will take the values from values.yaml automatically
 kubectl create ns kintohub
 helm upgrade --install kinto --namespace kintohub .
 ```
@@ -146,6 +153,7 @@ kinto-dashboard       dashboard.kintohub.net  34.89.73.47   80, 443   8m38s
 ```
 
 Access your DNS provider (cloudflare) and create a `HOST A` record for each of the above ingresses targetting the nginx-ingress-controller IP.
+**DO NOT** turn on DNS Proxy on cloudflare for every HOST A record.
 And create an additional wildcard one corresponding to `common.ssl.certificate.dnsName`.
 
 ie:
