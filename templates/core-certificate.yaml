@@ -1,4 +1,4 @@
-{{- if .Values.common.ssl.enabled }}
+{{- if .Values.core.ingress.enabled }}
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:

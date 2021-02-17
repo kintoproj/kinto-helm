@@ -1,19 +1,19 @@
-{{- if .Values.common.ssl.enabled }}
+{{- if .Values.dashboard.ingress.enabled }}
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: {{ template "kinto.frontend.fullname" . }}
+  name: {{ template "kinto.dashboard.fullname" . }}
   labels:
     app: {{ template "kinto.fullname" . }}
     chart: {{ template "kinto.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: {{ template "kinto.frontend.fullname" . }}
+    component: {{ template "kinto.dashboard.fullname" . }}
 spec:
-  secretName: {{ template "kinto.frontend.fullname" . }}-ssl
+  secretName: {{ template "kinto.dashboard.fullname" . }}-ssl
   issuerRef:
     name: {{ template "kinto.common.fullname" . }}
     kind: ClusterIssuer
   dnsNames:
-  - {{ .Values.frontend.ingress.host }}
+  - {{ .Values.dashboard.ingress.host }}
 {{- end }}

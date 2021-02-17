@@ -1,4 +1,3 @@
-{{- if .Values.common.ssl.enabled }}
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
@@ -21,7 +20,6 @@ spec:
         cloudflare:
           email: {{ .Values.common.ssl.issuer.solver.cloudflare.email }}
           apiTokenSecretRef:
-            name: {{ template "kinto.common.fullname" . }}
+            name: {{ template "kinto.cert-manager.fullname" . }}
             key: cloudflareApiToken
     {{- end }}
-{{- end }}

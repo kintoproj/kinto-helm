@@ -24,10 +24,14 @@
 {{- printf "%s-builder" .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "kinto.frontend.fullname" -}}
-{{- printf "%s-frontend" .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- define "kinto.dashboard.fullname" -}}
+{{- printf "%s-dashboard" .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "kinto.workflow.fullname" -}}
 {{- printf "%s-builder-workflow" .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "kinto.cert-manager.fullname" -}}
+{{- printf "%s-cert-manager" .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

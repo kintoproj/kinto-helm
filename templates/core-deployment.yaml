@@ -36,22 +36,12 @@ spec:
           value: "{{ .Values.core.grpc.port }}"
         - name: GRPC_WEB_PORT
           value: "{{ .Values.core.grpcWeb.port }}"
-        - name: KINTO_AGENT_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: KINTO_AGENT_HOST_NAME
-          value: "{{ .Values.core.ingress.grpc.host }}"
-        - name: KINTO_AGENT_WEB_HOST_NAME
-          value: "{{ .Values.core.ingress.grpcWeb.host }}"
         - name: BUILD_API_HOST
           value: {{ template "kinto.builder.fullname" . }}:{{ .Values.builder.port }}
-        {{- if .Values.common.ssl.enabled }}
         - name: CERT_MANAGER_ISSUER_EMAIL
           value: "{{ .Values.common.ssl.issuer.email }}"
         - name: CERT_MANAGER_ISSUER_SERVER
           value: "{{ .Values.common.ssl.issuer.server }}"
-        {{- end }}
         {{- range $key, $val := .Values.core.env }}
         - name: {{ $key }}
           value: "{{ $val }}"
