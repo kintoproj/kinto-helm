@@ -19,7 +19,7 @@ The chart will do the following:
 
 ### Prerequisites
 
-- [Cert Manager](https://cert-manager.io/docs/) and [Argo Workflow](https://github.com/argoproj/argo-workflows)are cluster wide (they operate at a cluster level) and they have their own sets of Custom Resource Definition.  
+- [Cert Manager](https://cert-manager.io/docs/) and [Argo Workflow](https://github.com/argoproj/argo-workflows) are cluster wide (they operate at a cluster level) and they have their own sets of Custom Resource Definition.  
 If you already have your own versions of these tools running on your Kubernetes Cluster, don't run the commands below but go straight to [Install KintoHub](#install-kintohub). If KintoHub does not work with the version you installed, please create an issue.
 Notes: KintoHub has been test with cert-manager v0.15.0 and argo workflow 0.9.5.
 - You must have a domain name ready to be used. KintoHub only support Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more.
