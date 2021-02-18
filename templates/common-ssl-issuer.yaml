@@ -20,6 +20,10 @@ spec:
         cloudflare:
           email: {{ .Values.common.ssl.issuer.solver.cloudflare.email }}
           apiTokenSecretRef:
+            {{- if empty .Values.common.ssl.issuer.solver.existingSecret }}
             name: {{ template "kinto.cert-manager.fullname" . }}
+            {{- else }}
+            name: {{ .Values.common.ssl.issuer.solver.existingSecret }}
+            {{- end }}
             key: cloudflareApiToken
     {{- end }}

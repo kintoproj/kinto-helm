@@ -18,9 +18,11 @@ common:
       email: benjamin.apprederisse@gmail.com ## TO BE CHANGED - this email will be used for every certificate generated
       server: https://acme-v02.api.letsencrypt.org/directory ## let's encrypt server used (this is the production one)
       solver:
+        ## Generate a token using https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
+        ## No need to provide `cloudflareApiToken` if `existingSecret` is set
+        # existingSecret: kinto-cert-manager ## in `cert-manager` namespace
         cloudflare:
           email: benjamin.apprederisse@gmail.com ## TO BE CHANGED - your cloudflare username account
-          ## Generate a token using https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
           cloudflareApiToken: j5Z0t1sBXDzGiOlUNtHmr2POyXUhatdDD_uk8XhC ## TO BE CHANGED
 
     certificate:
@@ -99,6 +101,8 @@ builder:
     ## Docker registry to access `builder.env.IMAGE_REGISTRY_HOST`
     ## This will create a type `kubernetes.io/dockerconfigjson` secret in kubernetes
     docker: ## TO BE CHANGED
+      ## No need to provide the rest of the information if `existingSecret` is set
+      # existingSecret: kinto-builder-workflow-docker ## in `kintohub` namespace
       registry: eu.gcr.io
       email: devaccounts@kintohub.com
       username: _json_key
