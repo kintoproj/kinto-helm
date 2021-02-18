@@ -222,7 +222,8 @@ minio:
     size: 10Gi
 
   resources:
-    requests: null ## https://github.com/helm/helm/issues/1966
+    requests: ## https://github.com/helm/helm/issues/1966
+      memory: 1Gi # By default minio request 4Gi of memory. Set it to 4 only if you have enough memory on your cluster
 
   defaultBucket:
     enabled: true
