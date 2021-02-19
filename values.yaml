@@ -103,6 +103,7 @@ builder:
     docker: ## TO BE CHANGED
       ## No need to provide the rest of the information if `existingSecret` is set
       # existingSecret: kinto-builder-workflow-docker ## in `kintohub` namespace
+      ## Using GCR
       registry: eu.gcr.io
       email: devaccounts@kintohub.com
       username: _json_key
@@ -118,6 +119,13 @@ builder:
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/temporary-gcs-admin%40kinto-development.iam.gserviceaccount.com"
 }'
+      ## Using Dockerhub
+      # Right not kaniko doesn't support v2 API
+      # https://github.com/GoogleContainerTools/kaniko/issues/1209
+      # registry: https://index.docker.io/v1/
+      # email: devaccounts@kintohub.com
+      # username: kintohub
+      # password: [DOCKERHUB-API-TOKEN] # Create access token https://docs.docker.com/docker-hub/access-tokens/
 
 dashboard:
   replicas: 1
