@@ -1,4 +1,8 @@
 # KintoHub Helm Chart Repository
 
 - Based on [helm documentation](https://helm.sh/docs/topics/chart_repository/).
-- We used Github page on the `gh-pages` branch to set up our chart repository.
+- Add this repository
+  
+  ```sh
+  helm repo add kintohub https://kintoproj.github.io/kinto-helm
+  ```
