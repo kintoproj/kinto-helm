@@ -43,7 +43,11 @@ spec:
         - name: KINTO_CORE_OVER_TLS
           value: "false"
         - name: ARGO_WORKFLOW_DOCKER_SECRET
+          {{- if empty .Values.builder.workflow.docker.existingSecret }}
           value: {{ template "kinto.workflow.fullname" . }}-docker
+          {{- else }}
+          value: {{ .Values.builder.workflow.docker.existingSecret }}
+          {{- end }}
         - name: ARGO_WORKFLOW_SERVICE_ACCOUNT
           value: {{ template "kinto.workflow.fullname" . }}
         - name: ARGO_WORKFLOW_MINIO_ACCESS_KEY

@@ -31,11 +31,19 @@ spec:
         image: {{ .Values.repo }}/{{ .Values.dashboard.image }}
         imagePullPolicy: {{ .Values.dashboard.imagePullPolicy }}
         env:
+        {{- if .Values.core.ingress.enabled }}
         - name: REACT_APP_SERVER_URL
           value: https://{{ .Values.core.ingress.grpcWeb.host }}
+        {{- else }}
+        - name: REACT_APP_SERVER_URL
+          value: http://localhost:{{ .Values.core.grpcWeb.port }}
+        {{- end }}
         {{- if .Values.dashboard.ingress.enabled }}
         - name: REACT_APP_SITE_HOST
           value: "{{ .Values.dashboard.ingress.host }}"
+        {{- else }}
+        - name: REACT_APP_SITE_HOST
+          value: localhost:{{ .Values.dashboard.port }}
         {{- end }}
         {{- range $key, $val := .Values.dashboard.env }}
         - name: {{ $key }}

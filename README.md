@@ -170,6 +170,20 @@ dashboard.kintohub.net HOST A 34.105.245.209
 And that's it.
 You can now open your URL (dashboard.kintohub.net) on your prefered browser and start using KintoHub.
 
+##### Local access
+
+In case your disabled the ingresses for kinto core and kinto dashboard, you will need to port forward the service in order to access the dashboard locally.
+
+```sh
+kubectl port-forward svc/kinto-core 8090
+Forwarding from 127.0.0.1:8090 -> 8090
+Forwarding from [::1]:8090 -> 8090
+
+kubectl port-forward svc/kinto-dashboard 5000
+Forwarding from 127.0.0.1:5000 -> 5000
+Forwarding from [::1]:5000 -> 5000
+```
+
 ## Uninstall the chart
 
 ```sh
