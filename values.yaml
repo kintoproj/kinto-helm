@@ -15,14 +15,14 @@ common:
     ## Issuer only works with cloudflare at the moment, please create an issue or open a PR if you want to add more
     ## Here are the list of providers supported: https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers    
     issuer:
-      email: benjamin.apprederisse@gmail.com ## TO BE CHANGED - this email will be used for every certificate generated
+      email: devaccounts@kintohub.com ## TO BE CHANGED - this email will be used for every certificate generated
       server: https://acme-v02.api.letsencrypt.org/directory ## let's encrypt server used (this is the production one)
       solver:
         ## Generate a token using https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
         ## No need to provide `cloudflareApiToken` if `existingSecret` is set
         # existingSecret: kinto-cert-manager ## in `cert-manager` namespace
         cloudflare:
-          email: benjamin.apprederisse@gmail.com ## TO BE CHANGED - your cloudflare username account
+          email: devaccounts@kintohub.com ## TO BE CHANGED - your cloudflare username account
           cloudflareApiToken: j5Z0t1sBXDzGiOlUNtHmr2POyXUhatdDD_uk8XhC ## TO BE CHANGED
 
     certificate:
@@ -243,58 +243,3 @@ minio:
   environment:
     MINIO_API_READY_DEADLINE: "5s"
     MINIO_BROWSER: "on"
-
-
-
-## DON'T TOUCH ANYTHING BELOW THAT LINE
-## It will be deprecated and removed soon
-
-argo:
-  enabled: false
-
-  installCRD: true
-
-  singleNamespace: true
-
-  controller:
-    resources: {}
-
-  server:
-    resources: {}
-
-  useDefaultArtifactRepo: true
-  artifactRepository:
-    archiveLogs: true
-    s3:
-      accessKeySecret:
-        name: kinto-minio
-        key: accesskey
-      secretKeySecret:
-        name: kinto-minio
-        key: secretkey
-      insecure: true
-      bucket: argo-artifacts
-      endpoint: kinto-minio:9000
-    minio:
-      install: false
-
-cert-manager:
-  enabled: false
-
-  resources: {}
-
-  global:
-    # Set the verbosity of cert-manager. Range of 0 - 6 with 6 being the most verbose.
-    logLevel: 2
-
-  installCRDs: true
-
-  replicaCount: 1
-
-  webhook:
-    replicaCount: 1
-
-    resources: {}
-
-  cainjector:
-    resources: {}

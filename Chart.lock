@@ -1,0 +1,12 @@
+dependencies:
+- name: nginx-ingress-controller
+  repository: https://charts.bitnami.com/bitnami
+  version: 5.3.24
+- name: minio
+  repository: https://helm.min.io/
+  version: 5.0.32
+- name: proxless
+  repository: https://bappr.github.io/proxless
+  version: 0.2.0
+digest: sha256:c61fa4c6322e421250b774f09eff4c9b2a577d11ccdf7caad7fb5d1f5f0a7f3b
+generated: "2021-02-21T09:43:43.159008+01:00"
