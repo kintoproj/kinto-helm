@@ -1,3 +1,4 @@
+{{- if .Values.common.ssl.enabled }}
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
@@ -15,3 +16,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - "{{ .Values.common.ssl.certificate.dnsName }}"
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.common.ssl.enabled }}
 {{- if .Values.dashboard.ingress.enabled }}
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
@@ -16,4 +17,5 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - {{ .Values.dashboard.ingress.host }}
+{{- end }}
 {{- end }}

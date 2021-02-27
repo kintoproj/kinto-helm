@@ -3,6 +3,8 @@
 ## Prerequisites Details
 
 - `Kubernetes 1.15+`
+- [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [`Helm v3.0+`](https://helm.sh/)
 
 ## Chart Details
 
@@ -19,43 +21,10 @@ The chart will do the following:
 
 ### Prerequisites
 
-- [Cert Manager](https://cert-manager.io/docs/) and [Argo Workflow](https://github.com/argoproj/argo-workflows) are cluster wide (they operate at a cluster level) and they have their own sets of Custom Resource Definition.  
-If you already have your own versions of these tools running on your Kubernetes Cluster, don't run the commands below but go straight to [Install KintoHub](#install-kintohub). If KintoHub does not work with the version you installed, please create an issue.
-Notes: KintoHub has been test with cert-manager v0.15.0 and argo workflow 0.9.5.
-- You must have a domain name ready to be used. KintoHub only support Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more.
+- [Argo Workflow](https://github.com/argoproj/argo-workflows)
+Notes: KintoHub has been tested with argo workflow 0.9.5.
 - KintoHub does not support its private docker registry yet. You must use an external one (docker hub, gcr, ecr, acr, etc.).
-- You must have [Helm](https://helm.sh/) (v3.0 or above) installed. Cert Manager/Argo/Kintohub are all installed via Helm Charts.
-- Kubernetes cluster with at least a node having 4GB or more memory
-
-#### Install Cert-Manager
-
-Run
-
-```sh
-kubectl create namespace cert-manager
-helm repo add jetstack https://charts.jetstack.io
-helm upgrade --install cert-manager \
-              --version v0.15.0 \
-              --set installCRDs=true \
-              --namespace cert-manager jetstack/cert-manager
-```
-
-Check cert-manager is running fine.
-
-Run
-
-```sh
-kubectl get pods -n cert-manager
-```
-
-and you should get something similar to
-
-```sh
-NAME                                       READY   STATUS    RESTARTS   AGE
-cert-manager-766d5c494b-wl4bq              1/1     Running   0          33s
-cert-manager-cainjector-6649bbb695-l5rb2   1/1     Running   0          33s
-cert-manager-webhook-68d464c8b-hvpf6       1/1     Running   0          33s
-```
+- Kubernetes cluster with at least a node having 4GB or more memory.
 
 #### Install Argo Workflow
 
@@ -81,20 +50,48 @@ helm upgrade --install argo \
               --namespace argo argo/argo
 ```
 
-Check argo is running fine.
+Check that argo is running fine.
 
 Run
 
 ```sh
 kubectl get pods -n argo
-```
 
-and you should get something similar to
-
-```sh
 NAME                                       READY   STATUS    RESTARTS   AGE
 argo-server-7869fd4b96-xn8gw               1/1     Running   0          62s
 argo-workflow-controller-b68ffccb5-jx7vq   1/1     Running   0          62s
+```
+
+#### If SSL is enabled
+
+- [Cert Manager](https://cert-manager.io/docs/)
+Notes: KintoHub has been tested with cert-manager v0.15.0.
+- You must have a domain name ready to be used. KintoHub only support Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more providers.
+
+##### Install Cert-Manager
+
+Run
+
+```sh
+kubectl create namespace cert-manager
+helm repo add jetstack https://charts.jetstack.io
+helm upgrade --install cert-manager \
+              --version v0.15.0 \
+              --set installCRDs=true \
+              --namespace cert-manager jetstack/cert-manager
+```
+
+Check cert-manager is running fine.
+
+Run
+
+```sh
+kubectl get pods -n cert-manager
+
+NAME                                       READY   STATUS    RESTARTS   AGE
+cert-manager-766d5c494b-wl4bq              1/1     Running   0          33s
+cert-manager-cainjector-6649bbb695-l5rb2   1/1     Running   0          33s
+cert-manager-webhook-68d464c8b-hvpf6       1/1     Running   0          33s
 ```
 
 ### Install KintoHub
@@ -121,11 +118,7 @@ Run
 
 ```sh
 kubectl get pods -n kintohub
-```
 
-and you should get something similar to
-
-```sh
 NAME                                                              READY   STATUS    RESTARTS   AGE
 kinto-builder-64cb848858-vjwp8                                    1/1     Running   0          56s
 kinto-core-7f9b8777c9-pwfv7                                       1/1     Running   0          56s
@@ -136,7 +129,7 @@ kinto-nginx-ingress-controller-default-backend-66549b79f8-7cmtx   1/1     Runnin
 kinto-proxless-65487b797c-jf7cd                                   1/1     Running   0          56s
 ```
 
-#### DNS Setup
+#### DNS Setup (if ingress is enabled or ssl is enabled)
 
 Get and save the IP of the nginx-ingress-controller.
 Get and save your ingresses domain names.

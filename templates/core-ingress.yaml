@@ -25,10 +25,12 @@ spec:
       - backend:
           serviceName: {{ template "kinto.core.fullname" . }}
           servicePort: {{ .Values.core.grpc.port }}
+  {{- if .Values.common.ssl.enabled }}
   tls:
   - hosts:
     - {{ .Values.core.ingress.grpc.host }}
     secretName: {{ template "kinto.core.fullname" . }}-ssl
+  {{- end }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -51,8 +53,10 @@ spec:
       - backend:
           serviceName: {{ template "kinto.core.fullname" . }}
           servicePort: {{ .Values.core.grpcWeb.port }}
+  {{- if .Values.common.ssl.enabled }}
   tls:
   - hosts:
     - {{ .Values.core.ingress.grpcWeb.host }}
     secretName: {{ template "kinto.core.fullname" . }}-ssl
+  {{- end }}
 {{- end }}
