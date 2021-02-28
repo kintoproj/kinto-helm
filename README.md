@@ -24,7 +24,7 @@ The chart will do the following:
 - [Argo Workflow](https://github.com/argoproj/argo-workflows)
 Notes: KintoHub has been tested with argo workflow 0.9.5.
 - KintoHub does not support its private docker registry yet. You must use an external one (docker hub, gcr, ecr, acr, etc.).
-- Kubernetes cluster with at least a node having 4GB or more memory.
+- Kubernetes cluster with at least one node having 4GB memory or more.
 
 #### Install Argo Workflow
 
@@ -50,7 +50,7 @@ helm upgrade --install argo \
               --namespace argo argo/argo
 ```
 
-Check that argo is running fine.
+Check if argo is running fine.
 
 Run
 
@@ -66,7 +66,7 @@ argo-workflow-controller-b68ffccb5-jx7vq   1/1     Running   0          62s
 
 - [Cert Manager](https://cert-manager.io/docs/)
 Notes: KintoHub has been tested with cert-manager v0.15.0.
-- You must have a domain name ready to be used. KintoHub only support Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more providers.
+- You must have a domain name ready to be used. KintoHub only supports Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more providers.
 
 ##### Install Cert-Manager
 
@@ -81,7 +81,7 @@ helm upgrade --install cert-manager \
               --namespace cert-manager jetstack/cert-manager
 ```
 
-Check cert-manager is running fine.
+Check if cert-manager is running fine.
 
 Run
 
@@ -112,7 +112,7 @@ kubectl create ns kintohub
 helm upgrade --install kinto --namespace kintohub .
 ```
 
-Check kintohub is running fine.
+Check if kintohub is running fine.
 
 Run
 
