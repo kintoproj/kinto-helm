@@ -38,10 +38,14 @@ spec:
           value: "{{ .Values.core.grpcWeb.port }}"
         - name: BUILD_API_HOST
           value: {{ template "kinto.builder.fullname" . }}:{{ .Values.builder.port }}
+        - name: SSL_ENABLED
+          value: "{{ .Values.common.ssl.enabled }}"
+        {{- if .Values.common.ssl.enabled }}
         - name: CERT_MANAGER_ISSUER_EMAIL
           value: "{{ .Values.common.ssl.issuer.email }}"
         - name: CERT_MANAGER_ISSUER_SERVER
           value: "{{ .Values.common.ssl.issuer.server }}"
+        {{- end }}
         {{- range $key, $val := .Values.core.env }}
         - name: {{ $key }}
           value: "{{ $val }}"

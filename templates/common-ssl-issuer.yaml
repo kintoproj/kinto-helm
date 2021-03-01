@@ -1,3 +1,4 @@
+{{- if .Values.common.ssl.enabled }}
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
@@ -27,3 +28,4 @@ spec:
             {{- end }}
             key: cloudflareApiToken
     {{- end }}
+{{- end }}

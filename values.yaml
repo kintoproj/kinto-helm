@@ -10,6 +10,7 @@ repo: kintohub
 
 common:
   ssl:
+    enabled: false
     ## Cert Manager concept: https://cert-manager.io/docs/concepts/issuer/
     ## This issuer is cluster wide and will be used for every cert generated in KintoHub
     ## Issuer only works with cloudflare at the moment, please create an issue or open a PR if you want to add more
