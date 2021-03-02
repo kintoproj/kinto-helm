@@ -33,14 +33,14 @@ spec:
         env:
         {{- if .Values.core.ingress.enabled }}
         - name: REACT_APP_SERVER_URL
-          value: https://{{ .Values.core.ingress.grpcWeb.host }}
+          value: https://core-web.{{ .Values.common.domainName }}
         {{- else }}
         - name: REACT_APP_SERVER_URL
           value: http://localhost:{{ .Values.core.grpcWeb.port }}
         {{- end }}
         {{- if .Values.dashboard.ingress.enabled }}
         - name: REACT_APP_SITE_HOST
-          value: "{{ .Values.dashboard.ingress.host }}"
+          value: "dashboard.{{ .Values.common.domainName }}"
         {{- else }}
         - name: REACT_APP_SITE_HOST
           value: localhost:{{ .Values.dashboard.port }}

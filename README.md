@@ -1,11 +1,12 @@
 # Kinto Helm Chart
+
 [![slack](https://img.shields.io/badge/slack-kintoproj-brightgreen)](https://join.slack.com/t/kintogoons/shared_invite/zt-mu6bvg79-BmkkdMRRwohJioZggXVYeA)
 
 ## Prerequisites Details
 
 - `Kubernetes 1.15+`
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-- [`Helm v3.0+`](https://helm.sh/)
+- [`Helm v3.5+`](https://helm.sh/)
 
 ## Chart Details
 
@@ -23,9 +24,8 @@ The chart will do the following:
 ### Prerequisites
 
 - [Argo Workflow](https://github.com/argoproj/argo-workflows)
-Notes: KintoHub has been tested with argo workflow 0.9.5.
+Notes: KintoHub has been tested with argo workflow chart 0.16.6.
 - KintoHub does not support its private docker registry yet. You must use an external one (docker hub, gcr, ecr, acr, etc.).
-- Kubernetes cluster with at least one node having 4GB memory or more.
 
 #### Install Argo Workflow
 
@@ -34,8 +34,9 @@ Run
 ```sh
 kubectl create namespace argo
 helm repo add argo https://argoproj.github.io/argo-helm
+# Notes: for `containerd` runtime, you need to add `--set controller.containerRuntimeExecutor=kubelet` (k8s +1.20)
 helm upgrade --install argo \
-              --version 0.9.5 \
+              --version 0.16.6 \
               --set installCRD=true \
               --set singleNamespace=false \
               --set useDefaultArtifactRepo=true \
@@ -66,7 +67,7 @@ argo-workflow-controller-b68ffccb5-jx7vq   1/1     Running   0          62s
 #### If SSL is enabled
 
 - [Cert Manager](https://cert-manager.io/docs/)
-Notes: KintoHub has been tested with cert-manager v0.15.0.
+Notes: KintoHub has been tested with cert-manager chart v0.15.0.
 - You must have a domain name ready to be used. KintoHub only supports Cloudflare at the moment, you can create a free account and transfer your domain ownership easily. Please create an issue if you want to add more providers.
 
 ##### Install Cert-Manager
@@ -97,20 +98,26 @@ cert-manager-webhook-68d464c8b-hvpf6       1/1     Running   0          33s
 
 ### Install KintoHub
 
-Check out this repository and adapt the [values.yaml](./values.yaml) file accordingly for your own need.
-Checks specifically for any `## TO BE CHANGED` pattern in it and change the values.
-Notes: you can also provide the parameters directly into the command line using `--set`.
-
 Run
 
 ```sh
-# Check out the repository and edit the values.yaml
-git clone https://github.com/kintoproj/kinto-helm.git
-vi values.yaml
-
-# install the chart via helm, it will take the values from values.yaml automatically
 kubectl create ns kintohub
-helm upgrade --install kinto --namespace kintohub .
+helm repo add kintohub https://kintoproj.github.io/kinto-helm
+## Every parameter below (except minio) needs to be changed so that they fit your configuration.
+## Check `values.yaml` file if you want more information about these parameters.
+helm upgrade --install kinto \
+              --set common.domainName='oss.kintohub.net' \
+              --set common.ssl.enabled=true \
+              --set common.ssl.issuer.email=devaccounts@kintohub.com \
+              --set common.ssl.issuer.solver.cloudflare.email=devaccounts@kintohub.com \
+              --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken= \
+              --set builder.env.IMAGE_REGISTRY_HOST=registry.digitalocean.com/kintohub \
+              --set builder.workflow.docker.registry=registry.digitalocean.com \
+              --set builder.workflow.docker.email=devaccounts@kintohub.com \
+              --set builder.workflow.docker.username= \
+              --set builder.workflow.docker.password= \
+              --set minio.resources.requests.memory=null \
+              --namespace kintohub kintohub/kinto
 ```
 
 Check if kintohub is running fine.

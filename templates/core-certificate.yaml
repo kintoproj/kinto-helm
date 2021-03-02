@@ -16,7 +16,7 @@ spec:
     name: {{ template "kinto.common.fullname" . }}
     kind: ClusterIssuer
   dnsNames:
-  - {{ .Values.core.ingress.grpc.host }}
-  - {{ .Values.core.ingress.grpcWeb.host }}
+  - core.{{ .Values.common.domainName }}
+  - core-web.{{ .Values.common.domainName }}
 {{- end }}
 {{- end }}
