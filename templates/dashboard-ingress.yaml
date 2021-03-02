@@ -15,11 +15,11 @@ spec:
   {{- if .Values.common.ssl.enabled }}
   tls:
     - hosts:
-      - {{ .Values.dashboard.ingress.host }}
+      - dashboard.{{ .Values.common.domainName }}
       secretName: {{ template "kinto.dashboard.fullname" . }}-ssl
   {{- end }}
   rules:
-  - host: {{ .Values.dashboard.ingress.host }}
+  - host: dashboard.{{ .Values.common.domainName }}
     http:
       paths:
       - backend:

@@ -16,6 +16,6 @@ spec:
     name: {{ template "kinto.common.fullname" . }}
     kind: ClusterIssuer
   dnsNames:
-  - {{ .Values.dashboard.ingress.host }}
+  - dashboard.{{ .Values.common.domainName }}
 {{- end }}
 {{- end }}

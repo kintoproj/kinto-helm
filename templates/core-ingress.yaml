@@ -19,7 +19,7 @@ metadata:
     component: {{ template "kinto.core.fullname" . }}
 spec:
   rules:
-  - host: {{ .Values.core.ingress.grpc.host }}
+  - host: core.{{ .Values.common.domainName }}
     http:
       paths:
       - backend:
@@ -28,7 +28,7 @@ spec:
   {{- if .Values.common.ssl.enabled }}
   tls:
   - hosts:
-    - {{ .Values.core.ingress.grpc.host }}
+    - core.{{ .Values.common.domainName }}
     secretName: {{ template "kinto.core.fullname" . }}-ssl
   {{- end }}
 ---
@@ -47,7 +47,7 @@ metadata:
     component: {{ template "kinto.core.fullname" . }}
 spec:
   rules:
-  - host: {{ .Values.core.ingress.grpcWeb.host }}
+  - host: core-web.{{ .Values.common.domainName }}
     http:
       paths:
       - backend:
@@ -56,7 +56,7 @@ spec:
   {{- if .Values.common.ssl.enabled }}
   tls:
   - hosts:
-    - {{ .Values.core.ingress.grpcWeb.host }}
+    - core-web.{{ .Values.common.domainName }}
     secretName: {{ template "kinto.core.fullname" . }}-ssl
   {{- end }}
 {{- end }}

@@ -9,12 +9,18 @@
 repo: kintohub
 
 common:
+  ## The domain name will be used for every web services exposed externally using kintohub
+  ## but also to access kinto dashboard and kinto core
+  ## ie: Kinto dashboard will be accessible through 'dashboard.oss.kintohub.net'
+  ## ie: Kinto core will be accessible through 'core.oss.kintohub.net' and 'core-web.oss.kintohub.net'
+  ## id: Every kinto services will be a subdomain of 'oss.kintohub.net'
+  domainName: oss.kintohub.net
   ssl:
     enabled: false
     ## Cert Manager concept: https://cert-manager.io/docs/concepts/issuer/
     ## This issuer is cluster wide and will be used for every cert generated in KintoHub
     ## Issuer only works with cloudflare at the moment, please create an issue or open a PR if you want to add more
-    ## Here are the list of providers supported: https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers    
+    ## Here is a list of providers supported: https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers    
     issuer:
       email: devaccounts@kintohub.com ## TO BE CHANGED - this email will be used for every certificate generated
       server: https://acme-v02.api.letsencrypt.org/directory ## let's encrypt server used (this is the production one)
@@ -24,12 +30,7 @@ common:
         # existingSecret: kinto-cert-manager ## in `cert-manager` namespace
         cloudflare:
           email: devaccounts@kintohub.com ## TO BE CHANGED - your cloudflare username account
-          cloudflareApiToken: j5Z0t1sBXDzGiOlUNtHmr2POyXUhatdDD_uk8XhC ## TO BE CHANGED
-
-    certificate:
-      ## Common wildcard certficate used for all web servers exposed external on kintohub
-      ## ie: the url to access your service will be https://[something].oss.kintohub.net
-      dnsName: "*.oss.kintohub.net" ## TO BE CHANGED
+          cloudflareApiToken: ## TO BE CHANGED
 
 core:
   replicas: 1
@@ -46,18 +47,9 @@ core:
   ingress:
     ## Disable this if you don't want kinto-core to be exposed on internet
     enabled: true
-    grpc:
-      ## External host name used by kinto-cli to connect to kinto-core
-      host: core.oss.kintohub.net ## TO BE CHANGED
-    grpcWeb:
-      ## External host name used by kinto-dashboard to connect to kinto-core
-      host: core-web.oss.kintohub.net ## TO BE CHANGED
 
   env:
     LOG_LEVEL: DEBUG
-    ## All web servers will be exposed with a subdomain of KINTO_DOMAIN
-    ## must be the same as `common.ssl.certificate.dnsName` minus `*.`
-    KINTO_DOMAIN: "oss.kintohub.net" ## TO BE CHANGED
   
   resources: {}
 
@@ -89,9 +81,11 @@ builder:
     ARGO_WORKFLOW_MINIO_HOST: kinto-minio:9000
     ARGO_WORKFLOW_MINIO_BUCKET: argo-artifacts
     ARGO_WORKFLOW_IMAGE_PULL_POLICY: IfNotPresent
-    ARGO_WORKFLOW_VOLUME_SIZE: 1Gi ## each workflow used a private volume.
-    ARGO_WORKFLOW_MEMORY_LIMIT: 4Gi
-    ARGO_WORKFLOW_CPU_LIMIT: 2
+    ARGO_WORKFLOW_VOLUME_SIZE: ## each workflow can use a private volume.
+    ARGO_WORKFLOW_MEMORY_LIMIT:
+    ARGO_WORKFLOW_CPU_LIMIT:
+    ARGO_WORKFLOW_MEMORY_REQUEST:
+    ARGO_WORKFLOW_CPU_REQUEST:
 
   resources: {}
 
@@ -108,18 +102,7 @@ builder:
       registry: eu.gcr.io
       email: devaccounts@kintohub.com
       username: _json_key
-      password: '{
-  "type": "service_account",
-  "project_id": "kinto-development",
-  "private_key_id": "9172aa92e5db9ee5f1e4301b91d73d461e1ee03f",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNLraxpMZjzFBm\niruFxuxeD6kJ99pvm2Zg77Sl52VQ7ftzKWbivcW4ljQjaktMHzqQm0mRRnn6127+\nLXiBUlI53BGPJTZ0mGxlMRmOsuYfj3Mqstf6FCTNQVYMmlu/9gkpzWev3Is1GXEC\nxXI/1KWwXPnlpdOl19lyPuSBS+fmEDjTnZNHFJDCFmJkL/l/wkn2qvu2jp0GSzb4\nIB6lbMB0XczYnFx8wVLzA/sZ78x0zWxyw37Yx4en5pUbmgWUcympK0Oce/4XoxDp\nK01pY3FzMGSQrrvSIcacHVY79PI27sID7py5BLp/exxNwQ66qLtBIu9Gfj/WFpJp\n2n5abd4/AgMBAAECggEACCPaS6Hl3P+2ENtgJSaHKhQk+KhEmjjoDuBzokFT26oV\nV7REyKoOtgv/dYg6BIMYp7QBbyoEnNb/KEZViYvihzkb2Tn4txd09W7FPMwMJSRj\nxUXjG6DA9QOqjkVxbmQsaOQlQOzW+PxRZ3K93ZpqGF0X7OxvQR0XG1kzZ43DXXUl\nFlSEAdcPMkIMpy9y0SWthPpguGo92Qlg8EejdVzKgmULnk0L2U4GVBdXr0f2RC3C\nyfClq2g69hCHvXyr1cJoHPB5MCFJbDnhnxCyqcJXlN60PV2LtBVzWLVnhTITuAuW\npz4uXqTsOuSnqb0dueshov2oU0oDOAeYjUwmqwR4AQKBgQDxbr2x5/Hl414Sm+s+\niAmvJm5Ba33J8X8B5hmEnFN5/bu1ycw7IgIdl9coNTz6RqNRMI0s1UNWCh4OARuJ\n73TXkHMkcTsCgpKNwGoEiWpTAEVPF4OmOwzu+0xSCgia0g1xTlw7dgtLku6VDln7\nwuBmTeiMq+quo3l/Bf1ZS7a+gQKBgQDZkAovg9riqpwP246Thj6kyrvF1Wht7xCK\nw/zIBFkXSDQCP5WhH3xKal7dRNTu6tBpRQZPQGAe4S5bMB13d3r8TW/WpFCVbVrE\nccg0JykJQkALns0+Y8SNxDBN+2pIOAzEOKPxuM3TxEocR5jAWvKEZYNQZMh9TefZ\naCB+76+8vwKBgQDxQ1v3M7TsqQhyCjPL+j/LMtlNMLC0JEtqR1nKxjk5GBEDudQI\nZ5S7o+fTe1gjNoGv+ZeqbLdsfJHKJtsxPQSDAgu+KBTzDi6LzvNi8zs4FHYucm4R\nqMLk8mUzOmmc5Tmft9G9bdodvIgEliHfz79VHJe+M3JC8IPSJtck69+DgQKBgEvc\nkfCnhXdsDibpY/nE4asMlhURqOxMY/Q/CrGj8nzPzHLMQRyBohFArftxuN3mOu26\nB80yoVGjK0rYqC20F8pKJikt+ntgOjotgqXM0d5Mn5Btuxt6JltYgY9vj0vHX4w8\nQ85RplOlKkJaJMVN8SqBSxyJR++JbsK8MDiS0zB5AoGAEhK+a/o0v3TIs3nnwWlN\nadFUTRj5QO6jsnhnw+Y/BzJ8NrBj3NFkovk1fTMBiQJCSICNc5KRbUNYpHxWNHK/\n9Q2RK0ZTJnkH30wNzfwksoOC6GJYYQ9UOPuN4d3D5BBD0qKdXOcffX1tKO6BmXL0\nRn75q+u865rcSP9jn8DfHRY=\n-----END PRIVATE KEY-----\n",
-  "client_email": "temporary-gcs-admin@kinto-development.iam.gserviceaccount.com",
-  "client_id": "106217820440723117186",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/temporary-gcs-admin%40kinto-development.iam.gserviceaccount.com"
-}'
+      password: [GCR-JSON-KEY]
       ## Using Dockerhub
       # Right not kaniko doesn't support v2 API
       # https://github.com/GoogleContainerTools/kaniko/issues/1209
@@ -141,8 +124,6 @@ dashboard:
   ingress:
     ## Disable this if you don't want kinto-dashboard to be exposed on internet
     enabled: true
-    ## User will open this URL on their browser to access the dashboard
-    host: dashboard.oss.kintohub.net ## TO BE CHANGED
 
   env:
     REACT_APP_GRPC_WEB_HTTPS_ENABLED: true
@@ -231,11 +212,12 @@ minio:
   secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
   persistence:
-    enabled: true
+    enabled: false
     size: 10Gi
 
   resources:
-    requests: null ## https://github.com/helm/helm/issues/1966
+    requests:
+      memory: null
 
   defaultBucket:
     enabled: true

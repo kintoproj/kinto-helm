@@ -38,6 +38,8 @@ spec:
           value: "{{ .Values.core.grpcWeb.port }}"
         - name: BUILD_API_HOST
           value: {{ template "kinto.builder.fullname" . }}:{{ .Values.builder.port }}
+        - name: KINTO_DOMAIN
+          value: "{{ .Values.common.domainName }}"
         - name: SSL_ENABLED
           value: "{{ .Values.common.ssl.enabled }}"
         {{- if .Values.common.ssl.enabled }}

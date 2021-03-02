@@ -15,5 +15,5 @@ spec:
     name: {{ template "kinto.common.fullname" . }}
     kind: ClusterIssuer
   dnsNames:
-  - "{{ .Values.common.ssl.certificate.dnsName }}"
+  - "*.{{ .Values.common.domainName }}"
 {{- end }}
