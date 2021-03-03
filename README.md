@@ -1,6 +1,6 @@
 # Kinto Helm Chart
 
-[![slack](https://img.shields.io/badge/slack-kintoproj-brightgreen)](http://slack.kintohub.com/)
+[![slack](https://img.shields.io/badge/slack-kintoproj-brightgreen)](https://slack.kintohub.com)
 
 ## Prerequisites Details
 
