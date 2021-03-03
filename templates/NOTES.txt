@@ -1,0 +1,47 @@
+######################################
+# Thank you for installing KintoHub. #
+######################################
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+
+######################################
+
+SETUP:
+1.  Get the IP of your Load Balancer.
+
+    NOTE: It may take a few minutes for the LoadBalancer public IP to be available!
+
+    You can watch the status of the service by running `kubectl get svc -n {{ .Release.Namespace }} -w {{ .Release.Name }}-nginx-ingress-controller`.
+    export LB_IP=$(kubectl get service {{ .Release.Name }}-nginx-ingress-controller -n {{ .Release.Namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+    echo ${LB_IP}
+
+2.  Configure your DNS provider
+
+    Create a `A` record with `*.{{ .Values.common.domainName }}` -> `${LB_IP}`.
+
+3.  Access your dashboard
+
+  {{- if or .Values.core.ingress.enabled .Values.dashboard.ingress.enabled }}
+    {{- if .Values.common.ssl.enabled }}
+    Open a browser and access `https://dashboard.{{ .Values.common.domainName }}`.
+    {{- else }}
+    Open a browser and access `http://dashboard.{{ .Values.common.domainName }}`.
+    {{- end }}
+  {{- else }}
+    Run the following commands in order to port-forward your kinto core and your kinto dashboard to your local laptop.
+
+    kubectl port-forward svc/{{ .Release.Name }}-core 8090 -n {{ .Release.Namespace }}
+
+    kubectl port-forward svc/{{ .Release.Name }}-dashboard 5000 -n {{ .Release.Namespace }}
+
+    Open a browser and access `http://localhost:5000`.
+  {{- end }}
+
+4.  Reach out to us on `https://slack.kintohub.com` if you have any issues.
+
+######################################
