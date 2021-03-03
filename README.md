@@ -137,53 +137,9 @@ kinto-nginx-ingress-controller-default-backend-66549b79f8-7cmtx   1/1     Runnin
 kinto-proxless-65487b797c-jf7cd                                   1/1     Running   0          56s
 ```
 
-#### DNS Setup (if ingress is enabled or ssl is enabled)
+#### Configure and Access KintoHub
 
-Get and save the IP of the nginx-ingress-controller.
-Get and save your ingresses domain names.
-
-```sh
-kubectl get service kinto-nginx-ingress-controller -n kintohub -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
-34.105.245.209
-
-kubectl get ingress -n kintohub
-NAME                  HOSTS                   ADDRESS       PORTS     AGE
-kinto-core-grpc       core.kintohub.net       34.89.73.47   80, 443   8m38s
-kinto-core-grpc-web   core-web.kintohub.net   34.89.73.47   80, 443   8m38s
-kinto-dashboard       dashboard.kintohub.net  34.89.73.47   80, 443   8m38s
-```
-
-Access your DNS provider (cloudflare) and create a `HOST A` record for each of the above ingresses targetting the nginx-ingress-controller IP.
-**DO NOT** turn on DNS Proxy on cloudflare for every HOST A record.
-And create an additional wildcard one corresponding to `common.ssl.certificate.dnsName`.
-
-ie:
-
-```txt
-core.kintohub.net      HOST A 34.105.245.209
-core-web.kintohub.net  HOST A 34.105.245.209
-dashboard.kintohub.net HOST A 34.105.245.209
-*.kintohub.net         HOST A 34.105.245.209
-```
-
-#### Access KintoHub
-
-And that's it.
-You can now open your URL (dashboard.kintohub.net) on your prefered browser and start using KintoHub.
-
-##### Local access
-
-In case your disabled the ingresses for kinto core and kinto dashboard, you will need to port forward the service in order to access the dashboard locally.
-
-```sh
-kubectl port-forward svc/kinto-core 8090
-Forwarding from 127.0.0.1:8090 -> 8090
-Forwarding from [::1]:8090 -> 8090
-
-kubectl port-forward svc/kinto-dashboard 5000
-Forwarding from 127.0.0.1:5000 -> 5000
-Forwarding from [::1]:5000 -> 5000
-```
+Follow the instructions displayed after the chart installation is successful.
 
 ## Uninstall the chart
 
