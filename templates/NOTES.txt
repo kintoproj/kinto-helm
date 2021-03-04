@@ -44,4 +44,8 @@ SETUP:
 
 4.  Reach out to us on `https://slack.kintohub.com` if you have any issues.
 
+Notes: if NetworkPolicies are enabled on your cluster, you need 'whitelist' the kintohub namespaces so that they can access your environments.
+Run `kubectl get networkpolicies`. If it does not error, that means that NetworkPolicies are enabled.
+If enabled, run `kubectl label ns kube-system argo cert-manager kintohub owner=kintohub --overwrite`.
+
 ######################################
