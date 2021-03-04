@@ -35,8 +35,8 @@ common:
 core:
   replicas: 1
 
-  image: kinto-core:latest
-  imagePullPolicy: Always
+  image: kinto-core:v0.1.1
+  imagePullPolicy: IfNotPresent
 
   grpc:
     port: 8080
@@ -57,8 +57,8 @@ builder:
   replicas: 1
 
   image: kinto-builder
-  imagePullPolicy: Always
-  tag: latest
+  imagePullPolicy: IfNotPresent
+  tag: v0.1.1
 
   port: 8080
 
@@ -114,8 +114,8 @@ builder:
 dashboard:
   replicas: 1
 
-  image: kinto-dashboard:latest
-  imagePullPolicy: Always
+  image: kinto-dashboard:v0.1.0
+  imagePullPolicy: IfNotPresent
 
   port: 5000
 
@@ -188,7 +188,7 @@ proxless:
   image:
     repository: bappr/proxless
     tag: v0.1.7
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
   logLevel: DEBUG
   replicas: 1 ## Uncomment `REDIS_URL` if > 1 and change `redis.enabled` to `true`
