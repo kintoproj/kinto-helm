@@ -42,6 +42,14 @@ spec:
           value: "{{ .Values.common.domainName }}"
         - name: SSL_ENABLED
           value: "{{ .Values.common.ssl.enabled }}"
+        - name: KINTO_CORE_NAMESPACE
+          value: {{ .Release.Namespace }}
+        - name: KINTO_BUILDER_DOCKER_SECRET
+          {{- if empty .Values.builder.workflow.docker.existingSecret }}
+          value: {{ template "kinto.workflow.fullname" . }}-docker
+          {{- else }}
+          value: {{ .Values.builder.workflow.docker.existingSecret }}
+          {{- end }}
         {{- if .Values.common.ssl.enabled }}
         - name: CERT_MANAGER_ISSUER_EMAIL
           value: "{{ .Values.common.ssl.issuer.email }}"
