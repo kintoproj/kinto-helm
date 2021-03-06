@@ -12,3 +12,4 @@ check-version-increment: true
 validate-chart-schema: true
 validate-yaml: true
 validate-maintainers: true
+debug: true
