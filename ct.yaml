@@ -1,0 +1,14 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+chart-dirs:
+  - charts
+chart-repos:
+  - bitnami=https://charts.bitnami.com/bitnami
+  - minio=https://helm.min.io/ 
+  - proxless=https://bappr.github.io/proxless
+helm-extra-args: --timeout 600s
+target-branch: main
+check-version-increment: true
+validate-chart-schema: true
+validate-yaml: true
+validate-maintainers: true
