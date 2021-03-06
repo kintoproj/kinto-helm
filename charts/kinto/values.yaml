@@ -132,6 +132,8 @@ dashboard:
 ## KintoHub as well as all your webservers with public access will be exposed throught this nginx controller
 nginx-ingress-controller:
   service:
+    type: LoadBalancer
+
     ##  PR : https://github.com/kintohub/kinto-kube-infra/pull/65
     ##  This is for preserving client IP address
     ##
