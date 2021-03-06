@@ -53,13 +53,15 @@ spec:
         - name: ARGO_WORKFLOW_MINIO_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: kinto-minio
+              name: {{ .Release.Name }}-minio
               key: accesskey
         - name: ARGO_WORKFLOW_MINIO_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: kinto-minio
+              name: {{ .Release.Name }}-minio
               key: secretkey
+        - name: ARGO_WORKFLOW_MINIO_HOST
+          value: {{ .Release.Name }}-minio:9000
         - name: ARGO_WORKFLOW_MAIN_IMAGE
           value: "{{ .Values.repo }}/{{ .Values.builder.workflow.mainImage }}:{{ .Values.builder.tag }}"
         - name: ARGO_WORKFLOW_CLI_IMAGE

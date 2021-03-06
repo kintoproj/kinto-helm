@@ -1,14 +1,14 @@
 apiVersion: v2
 name: kinto
 home: https://www.kintohub.com/
-version: 0.4.1
+version: 0.4.2
 description: All-in-one deployment platform designed for fullstack developers
 dependencies:
 - name: nginx-ingress-controller
   version: 5.3.24
   repository: https://charts.bitnami.com/bitnami
 - name: minio
-  version: 5.0.32
+  version: 8.0.10
   repository: https://helm.min.io/
 - name: proxless
   version: 0.2.0
@@ -19,7 +19,7 @@ keywords:
 - devops
 - cicd
 sources:
-- https://github.com/kintohub
+- https://github.com/kintoproj
 maintainers:
-- name: Ben
-  email: ben@kintohub.com
+- name: bappr
+  email: benjamin.apprederisse@gmail.com

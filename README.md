@@ -4,7 +4,7 @@
 
 ## Prerequisites Details
 
-- `Kubernetes 1.15+`
+- `Kubernetes 1.18+`
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [`Helm v3.5+`](https://helm.sh/)
 
@@ -104,19 +104,20 @@ Run
 kubectl create ns kintohub
 helm repo add kintohub https://kintoproj.github.io/kinto-helm
 ## Every parameter below (except minio) needs to be changed so that they fit your configuration.
-## Check `values.yaml` file if you want more information about these parameters.
+## Check [value.yaml](charts/kinto/values.yaml) file if you want more information about these parameters.
 helm upgrade --install kinto \
               --set common.domainName='oss.kintohub.net' \
               --set common.ssl.enabled=true \
               --set common.ssl.issuer.email=devaccounts@kintohub.com \
               --set common.ssl.issuer.solver.cloudflare.email=devaccounts@kintohub.com \
-              --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken= \
-              --set builder.env.IMAGE_REGISTRY_HOST=registry.digitalocean.com/kintohub \
-              --set builder.workflow.docker.registry=registry.digitalocean.com \
+              --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken=changeme \
+              --set builder.env.IMAGE_REGISTRY_HOST=kintohub \
+              --set builder.workflow.docker.registry=https://index.docker.io/v1/ \
               --set builder.workflow.docker.email=devaccounts@kintohub.com \
-              --set builder.workflow.docker.username= \
-              --set builder.workflow.docker.password= \
+              --set builder.workflow.docker.username=changeme \
+              --set builder.workflow.docker.password=changeme \
               --set minio.resources.requests.memory=null \
+              --set minio.makeBucketJob.resources.requests.memory=null \
               --namespace kintohub kintohub/kinto
 ```
 
@@ -139,7 +140,8 @@ kinto-proxless-65487b797c-jf7cd                                   1/1     Runnin
 
 #### Configure and Access KintoHub
 
-Follow the instructions displayed after the chart installation is successful.
+Follow the instructions displayed after the chart installation is successful.  
+Notes: by default, kintohub is only accessible locally and ssl is disabled. Check [value.yaml](charts/kinto/values.yaml) to change this.
 
 ## Uninstall the chart
 

@@ -20,17 +20,17 @@ common:
     ## Cert Manager concept: https://cert-manager.io/docs/concepts/issuer/
     ## This issuer is cluster wide and will be used for every cert generated in KintoHub
     ## Issuer only works with cloudflare at the moment, please create an issue or open a PR if you want to add more
-    ## Here is a list of providers supported: https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers    
+    ## Here is a list of providers supported: https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers
     issuer:
-      email: devaccounts@kintohub.com ## TO BE CHANGED - this email will be used for every certificate generated
-      server: https://acme-v02.api.letsencrypt.org/directory ## let's encrypt server used (this is the production one)
+      email: devaccounts@kintohub.com  ## TO BE CHANGED - this email will be used for every certificate generated
+      server: https://acme-v02.api.letsencrypt.org/directory  ## let's encrypt server used (this is the production one)
       solver:
         ## Generate a token using https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
         ## No need to provide `cloudflareApiToken` if `existingSecret` is set
-        # existingSecret: kinto-cert-manager ## in `cert-manager` namespace
+        # existingSecret: kinto-cert-manager  ## in `cert-manager` namespace
         cloudflare:
-          email: devaccounts@kintohub.com ## TO BE CHANGED - your cloudflare username account
-          cloudflareApiToken: ## TO BE CHANGED
+          email: devaccounts@kintohub.com  ## TO BE CHANGED - your cloudflare username account
+          cloudflareApiToken: [CF_API_TOKEN]  ## TO BE CHANGED
 
 core:
   replicas: 1
@@ -46,11 +46,11 @@ core:
 
   ingress:
     ## Disable this if you don't want kinto-core to be exposed on internet
-    enabled: true
+    enabled: false
 
   env:
     LOG_LEVEL: DEBUG
-  
+
   resources: {}
 
 builder:
@@ -67,21 +67,20 @@ builder:
 
     ## Image Registry used to push images that are built using KintoHub
     ## In order for kintohub to gain access over this registry, you must configure `builder.workflow.docker` correctly.
-    IMAGE_REGISTRY_HOST: eu.gcr.io/kinto-development ## TO BE CHANGED
+    IMAGE_REGISTRY_HOST: eu.gcr.io/kinto-development  ## TO BE CHANGED
 
     POLL_LOGS_INTERVAL_SECONDS: 1
-    USER_FRIENDLY_BUILD_LOGS_ENABLED: false 
+    USER_FRIENDLY_BUILD_LOGS_ENABLED: false
 
     ## Timeout in seconds after which the workflow fails
     WORKFLOW_TIMEOUT: 1800
 
     ## Configuration for Argo Workflow. KintoHub generated Argo Workflow in Kubernetes to build and deploy your services.
     ## Therefore, workflows must be configured according to what you build.
-    ARGO_WORKFLOW_TTL_SECONDS: 120 ## After completion, Argo automatically clean up kubernetes and delete the workflow after ARGO_WORKFLOW_TTL_SECONDS in seconds
-    ARGO_WORKFLOW_MINIO_HOST: kinto-minio:9000
+    ARGO_WORKFLOW_TTL_SECONDS: 120  ## After completion, Argo automatically clean up kubernetes and delete the workflow after ARGO_WORKFLOW_TTL_SECONDS in seconds
     ARGO_WORKFLOW_MINIO_BUCKET: argo-artifacts
     ARGO_WORKFLOW_IMAGE_PULL_POLICY: IfNotPresent
-    ARGO_WORKFLOW_VOLUME_SIZE: ## each workflow can use a private volume.
+    ARGO_WORKFLOW_VOLUME_SIZE:  ## each workflow can use a private volume.
     ARGO_WORKFLOW_MEMORY_LIMIT:
     ARGO_WORKFLOW_CPU_LIMIT:
     ARGO_WORKFLOW_MEMORY_REQUEST:
@@ -90,26 +89,25 @@ builder:
   resources: {}
 
   workflow:
-    mainImage: kinto-workflow-main ## don't add tag here, it is dependant of `builder.tag`
-    cliImage: kinto-workflow-cli ## don't add tag here, it is dependant of `builder.tag`
+    mainImage: kinto-workflow-main  ## don't add tag here, it is dependant of `builder.tag`
+    cliImage: kinto-workflow-cli  ## don't add tag here, it is dependant of `builder.tag`
 
     ## Docker registry to access `builder.env.IMAGE_REGISTRY_HOST`
     ## This will create a type `kubernetes.io/dockerconfigjson` secret in kubernetes
-    docker: ## TO BE CHANGED
+    docker:  ## TO BE CHANGED
       ## No need to provide the rest of the information if `existingSecret` is set
-      # existingSecret: kinto-builder-workflow-docker ## in `kintohub` namespace
+      # existingSecret: kinto-builder-workflow-docker  ## in `kintohub` namespace
       ## Using GCR
       registry: eu.gcr.io
       email: devaccounts@kintohub.com
       username: _json_key
-      password: [GCR-JSON-KEY]
+      password: [GCR_JSON_KEY]
       ## Using Dockerhub
-      # Right not kaniko doesn't support v2 API
-      # https://github.com/GoogleContainerTools/kaniko/issues/1209
+      ## Right not kaniko doesn't support v2 API -> https://github.com/GoogleContainerTools/kaniko/issues/1209
       # registry: https://index.docker.io/v1/
       # email: devaccounts@kintohub.com
       # username: kintohub
-      # password: [DOCKERHUB-API-TOKEN] # Create access token https://docs.docker.com/docker-hub/access-tokens/
+      # password: [DOCKERHUB_API_TOKEN]  ## Create access token https://docs.docker.com/docker-hub/access-tokens/
 
 dashboard:
   replicas: 1
@@ -123,17 +121,19 @@ dashboard:
 
   ingress:
     ## Disable this if you don't want kinto-dashboard to be exposed on internet
-    enabled: true
+    enabled: false
 
   env:
     REACT_APP_GRPC_WEB_HTTPS_ENABLED: true
-    REACT_APP_SLEEP_MODE_TTL_MINUTES: "10" ## Default Time To Sleep for web servers configured with Sleep Mode enabled
+    REACT_APP_SLEEP_MODE_TTL_MINUTES: "10"  ## Default Time To Sleep for web servers configured with Sleep Mode enabled
     REACT_APP_LOCAL_STORAGE_VERSION: "20201124153800"
 
 ## Configuration for nginx-ingress-controller
 ## KintoHub as well as all your webservers with public access will be exposed throught this nginx controller
 nginx-ingress-controller:
   service:
+    type: ClusterIP
+
     ##  PR : https://github.com/kintohub/kinto-kube-infra/pull/65
     ##  This is for preserving client IP address
     ##
@@ -152,9 +152,9 @@ nginx-ingress-controller:
     ##  See following video: https://www.youtube.com/watch?v=y2bhV81MfKQ&feature=youtu.be&t=1823
     ##  As u can see, this downside will mostly be for multiple pods of the same deployment per node. And our user don't have this case yet,
     ##  they barely use autoscaling.
-    ##  So I suggest we merge this PR and we will see in the future if issue arises. We will be able then to maybe deploy another ingress 
+    ##  So I suggest we merge this PR and we will see in the future if issue arises. We will be able then to maybe deploy another ingress
     ##  controller with better spreading.
-    externalTrafficPolicy: Local
+    # externalTrafficPolicy: Local
 
   replicaCount: 1
   minAvailable: 1
@@ -166,7 +166,7 @@ nginx-ingress-controller:
 
   scope:
     enabled: false
-  
+
   extraArgs:
     ## Wildcard certificate corresponding to `common.ssl.certificate`
     ## All your webservers will use this certificate by default
@@ -191,16 +191,16 @@ proxless:
     pullPolicy: IfNotPresent
 
   logLevel: DEBUG
-  replicas: 1 ## Uncomment `REDIS_URL` if > 1 and change `redis.enabled` to `true`
+  replicas: 1  ## Uncomment `REDIS_URL` if > 1 and change `redis.enabled` to `true`
 
   resources: {}
 
   env:
-    SERVERLESS_TTL_SECONDS: 30 # Time in seconds proxless waits before scaling down the app
-    DEPLOYMENT_READINESS_TIMEOUT_SECONDS: 30 # Time in seconds proxless waits for the deployment to be ready when scaling up the app
-    SCALE_DOWN_CHECK_INTERVAL_SECONDS: 3000 # The downscaler check the deployment every N seconds
-    SERVICES_INFORMER_RESYNC_INTERVAL_SECONDS: 3000 # All services will be resynced after N seconds
-    # REDIS_URL: kinto-redis-master:6379 # Configured to use redis below
+    SERVERLESS_TTL_SECONDS: 30  ## Time in seconds proxless waits before scaling down the app
+    DEPLOYMENT_READINESS_TIMEOUT_SECONDS: 30  ## Time in seconds proxless waits for the deployment to be ready when scaling up the app
+    SCALE_DOWN_CHECK_INTERVAL_SECONDS: 3000  ## The downscaler check the deployment every N seconds
+    SERVICES_INFORMER_RESYNC_INTERVAL_SECONDS: 3000  ## All services will be resynced after N seconds
+    # REDIS_URL: kinto-redis-master:6379  ## Configured to use redis below
 
   redis:
     enabled: false
@@ -218,6 +218,11 @@ minio:
   resources:
     requests:
       memory: null
+
+  makeBucketJob:
+    resources:
+      requests:
+        memory: null
 
   defaultBucket:
     enabled: true
