@@ -98,24 +98,17 @@ cert-manager-webhook-68d464c8b-hvpf6       1/1     Running   0          33s
 
 ### Install KintoHub
 
-Run
+Run the following steps depending on the setup you want.  
+Each one of the following steps are "incremental", you must run all the steps prior to the setup your chose.
 
-```sh
-kubectl create ns kintohub
-helm repo add kintohub https://kintoproj.github.io/kinto-helm
-```
-
-Then, run the following steps depending on the setup you want.  
-Each one of the following steps are "incremental", you must run all the previous steps before your "setup" step.
-
-- Generic Args
+- **Generic Args**
 
   ```sh
   export KINTO_ARGS="--set minio.resources.requests.memory=null \
   --set minio.makeBucketJob.resources.requests.memory=null"
   ```
 
-- KintoHub Local
+- **KintoHub Local**
 
   KintoHub is installed on a local cluster with no inbound internet connection.
 
@@ -130,7 +123,7 @@ Each one of the following steps are "incremental", you must run all the previous
 
   Notes: change the parameters above.
 
-- Kinto Dashboard Local but Web Services Exposed Publicly **WITHOUT** SSL
+- **Kinto Dashboard Local but Web Services Exposed Publicly _WITHOUT_ SSL**
 
   Kintohub Dashboard is not publicly exposed, you will need a port-forward to access it.  
   However, the web services deployed using KintoHub are exposed without SSL.
@@ -143,7 +136,7 @@ Each one of the following steps are "incremental", you must run all the previous
 
   Notes: change the parameters above.
 
-- KintoHub Dashboard Local but Web Services Exposed Publicly **WITH** SSL
+- **KintoHub Dashboard Local but Web Services Exposed Publicly _WITH_ SSL**
 
   Web services are exposed with SSL.
 
@@ -157,7 +150,7 @@ Each one of the following steps are "incremental", you must run all the previous
 
   Notes: change the parameters above.
 
-- Everything Publicly Exposed
+- **Everything Publicly Exposed**
 
   ```sh
   export KINTO_ARGS="${KINTO_ARGS} \
@@ -165,9 +158,11 @@ Each one of the following steps are "incremental", you must run all the previous
   --set dashboard.ingress.enabled=true"
   ```
 
-Run
+Finally, run the following commands to install KintoHub.
 
 ```sh
+kubectl create ns kintohub
+helm repo add kintohub https://kintoproj.github.io/kinto-helm
 helm upgrade --install kinto \
               $(echo ${KINTO_ARGS}) \
               --namespace kintohub kintohub/kinto

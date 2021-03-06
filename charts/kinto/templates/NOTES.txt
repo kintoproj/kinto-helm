@@ -12,9 +12,10 @@ To learn more about the release, try:
 ######################################
 
 SETUP:
+
 1.  Get the IP of your Load Balancer.
 
-    {{- if eq .Values.nginx-ingress-controller.service.type "LoadBalancer" }}
+    {{- if eq (index .Values "nginx-ingress-controller" "service" "type") "LoadBalancer" }}
     NOTE: It may take a few minutes for the LoadBalancer public IP to be available!
 
     You can watch the status of the service by running `kubectl get svc -n {{ .Release.Namespace }} -w {{ .Release.Name }}-nginx-ingress-controller`.
@@ -27,7 +28,7 @@ SETUP:
 
 2.  Configure your DNS provider
 
-    {{- if eq .Values.nginx-ingress-controller.service.type "LoadBalancer" }}
+    {{- if eq (index .Values "nginx-ingress-controller" "service" "type") "LoadBalancer" }}
     Create a `A` record with `*.{{ .Values.common.domainName }}` -> `${LB_IP}`.
     {{- else }}
     KintoHub Local setup.  
