@@ -103,25 +103,77 @@ Run
 ```sh
 kubectl create ns kintohub
 helm repo add kintohub https://kintoproj.github.io/kinto-helm
-## Every parameter below (except minio) needs to be changed so that they fit your configuration.
-## Check [value.yaml](charts/kinto/values.yaml) file if you want more information about these parameters.
+```
+
+Then, run the following steps depending on the setup you want.  
+Each one of the following steps are "incremental", you must run all the previous steps before your "setup" step.
+
+- Generic Args
+
+  ```sh
+  export KINTO_ARGS="--set minio.resources.requests.memory=null \
+  --set minio.makeBucketJob.resources.requests.memory=null"
+  ```
+
+- KintoHub Local
+
+  KintoHub is installed on a local cluster with no inbound internet connection.
+
+  ```sh
+  export KINTO_ARGS="${KINTO_ARGS} \
+  --set builder.env.IMAGE_REGISTRY_HOST=kintohub \
+  --set builder.workflow.docker.registry=https://index.docker.io/v1/ \
+  --set builder.workflow.docker.email=devaccounts@kintohub.com \
+  --set builder.workflow.docker.username=docker-username \
+  --set builder.workflow.docker.password=docker-password"
+  ```
+
+  Notes: change the parameters above.
+
+- Kinto Dashboard Local but Web Services Exposed Publicly **WITHOUT** SSL
+
+  Kintohub Dashboard is not publicly exposed, you will need a port-forward to access it.  
+  However, the web services deployed using KintoHub are exposed without SSL.
+
+  ```sh
+  export KINTO_ARGS="${KINTO_ARGS} \
+  --set nginx-ingress-controller.service.type=LoadBalancer \
+  --set common.domainName=oss.kintohub.net"
+  ```
+
+  Notes: change the parameters above.
+
+- KintoHub Dashboard Local but Web Services Exposed Publicly **WITH** SSL
+
+  Web services are exposed with SSL.
+
+  ```sh
+  export KINTO_ARGS="${KINTO_ARGS} \
+  --set common.ssl.enabled=true \
+  --set common.ssl.issuer.email=devaccounts@kintohub.com \
+  --set common.ssl.issuer.solver.cloudflare.email=devaccounts@kintohub.com \
+  --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken=cf-token"
+  ```
+
+  Notes: change the parameters above.
+
+- Everything Publicly Exposed
+
+  ```sh
+  export KINTO_ARGS="${KINTO_ARGS} \
+  --set core.ingress.enabled=true \
+  --set dashboard.ingress.enabled=true"
+  ```
+
+Run
+
+```sh
 helm upgrade --install kinto \
-              --set common.domainName='oss.kintohub.net' \
-              --set common.ssl.enabled=true \
-              --set common.ssl.issuer.email=devaccounts@kintohub.com \
-              --set common.ssl.issuer.solver.cloudflare.email=devaccounts@kintohub.com \
-              --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken=changeme \
-              --set builder.env.IMAGE_REGISTRY_HOST=kintohub \
-              --set builder.workflow.docker.registry=https://index.docker.io/v1/ \
-              --set builder.workflow.docker.email=devaccounts@kintohub.com \
-              --set builder.workflow.docker.username=changeme \
-              --set builder.workflow.docker.password=changeme \
-              --set minio.resources.requests.memory=null \
-              --set minio.makeBucketJob.resources.requests.memory=null \
+              $(echo ${KINTO_ARGS}) \
               --namespace kintohub kintohub/kinto
 ```
 
-Check if kintohub is running fine.
+Check if KintoHub is running fine
 
 Run
 
