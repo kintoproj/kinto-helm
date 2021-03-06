@@ -2,7 +2,36 @@ apiVersion: v1
 entries:
   kinto:
   - apiVersion: v2
-    created: "2021-03-04T13:51:23.237253+01:00"
+    created: "2021-03-06T09:15:19.872264+01:00"
+    dependencies:
+    - name: nginx-ingress-controller
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.3.24
+    - name: minio
+      repository: https://helm.min.io/
+      version: 5.0.32
+    - name: proxless
+      repository: https://bappr.github.io/proxless
+      version: 0.2.0
+    description: All-in-one deployment platform designed for fullstack developers
+    digest: 607278d3758490bd61c234bbf405c106d6699d4a8d774446ab631d5b561644ff
+    home: https://www.kintohub.com/
+    keywords:
+    - kintohub
+    - developers
+    - devops
+    - cicd
+    maintainers:
+    - email: ben@kintohub.com
+      name: Ben
+    name: kinto
+    sources:
+    - https://github.com/kintohub
+    urls:
+    - https://kintoproj.github.io/kinto-helm/kinto-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v2
+    created: "2021-03-06T09:15:19.865163+01:00"
     dependencies:
     - name: nginx-ingress-controller
       repository: https://charts.bitnami.com/bitnami
@@ -31,7 +60,7 @@ entries:
     - https://kintoproj.github.io/kinto-helm/kinto-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v2
-    created: "2021-03-04T13:51:23.231952+01:00"
+    created: "2021-03-06T09:15:19.858589+01:00"
     dependencies:
     - name: nginx-ingress-controller
       repository: https://charts.bitnami.com/bitnami
@@ -60,7 +89,7 @@ entries:
     - https://kintoproj.github.io/kinto-helm/kinto-0.3.1.tgz
     version: 0.3.1
   - apiVersion: v2
-    created: "2021-03-04T13:51:23.225559+01:00"
+    created: "2021-03-06T09:15:19.851293+01:00"
     dependencies:
     - name: nginx-ingress-controller
       repository: https://charts.bitnami.com/bitnami
@@ -89,7 +118,7 @@ entries:
     - https://kintoproj.github.io/kinto-helm/kinto-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
-    created: "2021-03-04T13:51:23.220235+01:00"
+    created: "2021-03-06T09:15:19.845249+01:00"
     dependencies:
     - name: nginx-ingress-controller
       repository: https://charts.bitnami.com/bitnami
@@ -118,7 +147,7 @@ entries:
     - https://kintoproj.github.io/kinto-helm/kinto-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v2
-    created: "2021-03-04T13:51:23.199854+01:00"
+    created: "2021-03-06T09:15:19.827002+01:00"
     dependencies:
     - name: nginx-ingress-controller
       repository: https://charts.bitnami.com/bitnami
@@ -147,7 +176,7 @@ entries:
     - https://kintoproj.github.io/kinto-helm/kinto-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v1
-    created: "2021-03-04T13:51:23.178412+01:00"
+    created: "2021-03-06T09:15:19.806803+01:00"
     dependencies:
     - name: nginx-ingress-controller
       repository: https://charts.bitnami.com/bitnami
@@ -183,4 +212,4 @@ entries:
     urls:
     - https://kintoproj.github.io/kinto-helm/kinto-0.1.0.tgz
     version: 0.1.0
-generated: "2021-03-04T13:51:23.153059+01:00"
+generated: "2021-03-06T09:15:19.784469+01:00"
