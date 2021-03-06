@@ -14,9 +14,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update dependencies
-        run: helm dep update
-
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
@@ -26,6 +23,10 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: v3.4.0
+      
+      - name: Update dependencies
+        run: helm dep update
+        working-directory: charts/kinto
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.0
