@@ -4,9 +4,9 @@ dependencies:
   version: 5.3.24
 - name: minio
   repository: https://helm.min.io/
-  version: 5.0.32
+  version: 8.0.10
 - name: proxless
   repository: https://bappr.github.io/proxless
   version: 0.2.0
-digest: sha256:c61fa4c6322e421250b774f09eff4c9b2a577d11ccdf7caad7fb5d1f5f0a7f3b
-generated: "2021-02-21T09:43:43.159008+01:00"
+digest: sha256:59837339e8ebaedd3432b755d269f33ce89ce0c8b337a96ce7c58ff5ce5d15e5
+generated: "2021-03-06T18:15:59.852639+01:00"

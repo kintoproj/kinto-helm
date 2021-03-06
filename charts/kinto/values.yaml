@@ -219,6 +219,11 @@ minio:
     requests:
       memory: null
 
+  makeBucketJob:
+    resources:
+      requests:
+        memory: null
+
   defaultBucket:
     enabled: true
     name: argo-artifacts

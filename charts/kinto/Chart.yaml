@@ -8,7 +8,7 @@ dependencies:
   version: 5.3.24
   repository: https://charts.bitnami.com/bitnami
 - name: minio
-  version: 5.0.32
+  version: 8.0.10
   repository: https://helm.min.io/
 - name: proxless
   version: 0.2.0

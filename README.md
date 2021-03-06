@@ -117,6 +117,7 @@ helm upgrade --install kinto \
               --set builder.workflow.docker.username=changeme \
               --set builder.workflow.docker.password=changeme \
               --set minio.resources.requests.memory=null \
+              --set minio.makeBucketJob.resources.requests.memory=null \
               --namespace kintohub kintohub/kinto
 ```
 
