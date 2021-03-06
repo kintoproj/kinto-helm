@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - feat/automatic-chart-package
+      - main
 
 jobs:
   release:
