@@ -132,7 +132,7 @@ dashboard:
 ## KintoHub as well as all your webservers with public access will be exposed throught this nginx controller
 nginx-ingress-controller:
   service:
-    type: LoadBalancer
+    type: ClusterIP
 
     ##  PR : https://github.com/kintohub/kinto-kube-infra/pull/65
     ##  This is for preserving client IP address
@@ -154,7 +154,7 @@ nginx-ingress-controller:
     ##  they barely use autoscaling.
     ##  So I suggest we merge this PR and we will see in the future if issue arises. We will be able then to maybe deploy another ingress
     ##  controller with better spreading.
-    externalTrafficPolicy: Local
+    # externalTrafficPolicy: Local
 
   replicaCount: 1
   minAvailable: 1
