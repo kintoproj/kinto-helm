@@ -161,7 +161,7 @@ For example, if you want to enable SSL, you need to run "Minimum Configuration" 
   kinto-proxless-65487b797c-jf7cd                                   1/1     Running   0          56s
   ```
 
-#### Configure and Access KintoHub
+### Configure and Access KintoHub
 
 Follow the instructions displayed after the chart installation is successful.  
 Notes: by default, kintohub is only accessible locally and ssl is disabled. Check [value.yaml](charts/kinto/values.yaml) to change this.
