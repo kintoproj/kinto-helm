@@ -98,10 +98,10 @@ builder:
       ## No need to provide the rest of the information if `existingSecret` is set
       # existingSecret: kinto-builder-workflow-docker  ## in `kintohub` namespace
       ## Right now, kaniko doesn't support v2 API -> https://github.com/GoogleContainerTools/kaniko/issues/1209
-      # registry: https://index.docker.io/v1/
-      # email: devaccounts@kintohub.com
-      # username: kintohub
-      # password: [DOCKERHUB_API_TOKEN]  ## Create access token https://docs.docker.com/docker-hub/access-tokens/
+      registry: https://index.docker.io/v1/
+      email: devaccounts@kintohub.com
+      username: kintohub
+      password: [DOCKERHUB_API_TOKEN]  ## Create access token https://docs.docker.com/docker-hub/access-tokens/
 
 dashboard:
   replicas: 1
