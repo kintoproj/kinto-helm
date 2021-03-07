@@ -29,8 +29,6 @@ Notes: KintoHub has been tested with argo workflow chart 0.16.6.
 
 #### Install Argo Workflow
 
-Run
-
 ```sh
 kubectl create namespace argo
 helm repo add argo https://argoproj.github.io/argo-helm
@@ -54,8 +52,6 @@ helm upgrade --install argo \
 
 Check if argo is running fine.
 
-Run
-
 ```sh
 kubectl get pods -n argo
 
@@ -72,8 +68,6 @@ Notes: KintoHub has been tested with cert-manager chart v0.15.0.
 
 ##### Install Cert-Manager
 
-Run
-
 ```sh
 kubectl create namespace cert-manager
 helm repo add jetstack https://charts.jetstack.io
@@ -84,8 +78,6 @@ helm upgrade --install cert-manager \
 ```
 
 Check if cert-manager is running fine.
-
-Run
 
 ```sh
 kubectl get pods -n cert-manager
@@ -99,58 +91,44 @@ cert-manager-webhook-68d464c8b-hvpf6       1/1     Running   0          33s
 ### Install KintoHub
 
 Run the following steps depending on the setup you want.  
-Each one of the following steps are "incremental", you must run all the steps prior to the setup your chose.
+Each one of the following steps are "incremental", you must run all the steps prior to the setup you chose.
+For example, if you want to enable SSL, you need to run "Minimum Configuration" and "Enable public access to deployed services" first, in the order.
 
-- **Generic Args**
-
-  ```sh
-  export KINTO_ARGS="--set minio.resources.requests.memory=null \
-  --set minio.makeBucketJob.resources.requests.memory=null"
-  ```
-
-- **KintoHub Local**
+- **Minimum Configuration**
 
   KintoHub is installed on a local cluster with no inbound internet connection.
 
   ```sh
-  export KINTO_ARGS="${KINTO_ARGS} \
-  --set builder.env.IMAGE_REGISTRY_HOST=kintohub \
-  --set builder.workflow.docker.registry=https://index.docker.io/v1/ \
-  --set builder.workflow.docker.email=devaccounts@kintohub.com \
-  --set builder.workflow.docker.username=docker-username \
-  --set builder.workflow.docker.password=docker-password"
+  export KINTO_ARGS="--set minio.resources.requests.memory=null \
+  --set minio.makeBucketJob.resources.requests.memory=null \
+  --set builder.env.IMAGE_REGISTRY_HOST={YOUR_OWN_CONFIG} \
+  --set builder.workflow.docker.registry={YOUR_OWN_CONFIG} \
+  --set builder.workflow.docker.email={YOUR_OWN_CONFIG} \
+  --set builder.workflow.docker.username={YOUR_OWN_CONFIG} \
+  --set builder.workflow.docker.password={YOUR_OWN_CONFIG}"
   ```
 
-  Notes: change the parameters above.
+- **Enable public access to deployed services**
 
-- **Kinto Dashboard Local but Web Services Exposed Publicly _WITHOUT_ SSL**
-
-  Kintohub Dashboard is not publicly exposed, you will need a port-forward to access it.  
-  However, the web services deployed using KintoHub are exposed without SSL.
+  All web services deployed with KintoHub are accessible from internet.
 
   ```sh
   export KINTO_ARGS="${KINTO_ARGS} \
   --set nginx-ingress-controller.service.type=LoadBalancer \
-  --set common.domainName=oss.kintohub.net"
+  --set common.domainName={YOUR_OWN_CONFIG}"
   ```
 
-  Notes: change the parameters above.
-
-- **KintoHub Dashboard Local but Web Services Exposed Publicly _WITH_ SSL**
-
-  Web services are exposed with SSL.
+- **Enable HTTPS**
 
   ```sh
   export KINTO_ARGS="${KINTO_ARGS} \
   --set common.ssl.enabled=true \
-  --set common.ssl.issuer.email=devaccounts@kintohub.com \
-  --set common.ssl.issuer.solver.cloudflare.email=devaccounts@kintohub.com \
-  --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken=cf-token"
+  --set common.ssl.issuer.email={YOUR_OWN_CONFIG} \
+  --set common.ssl.issuer.solver.cloudflare.email={YOUR_OWN_CONFIG} \
+  --set common.ssl.issuer.solver.cloudflare.cloudflareApiToken={YOUR_OWN_CONFIG}"
   ```
 
-  Notes: change the parameters above.
-
-- **Everything Publicly Exposed**
+- **Expose KintoHub dashboard to Internet**
 
   ```sh
   export KINTO_ARGS="${KINTO_ARGS} \
@@ -158,32 +136,30 @@ Each one of the following steps are "incremental", you must run all the steps pr
   --set dashboard.ingress.enabled=true"
   ```
 
-Finally, run the following commands to install KintoHub.
+- **Deploy KintoHub**
 
-```sh
-kubectl create ns kintohub
-helm repo add kintohub https://kintoproj.github.io/kinto-helm
-helm upgrade --install kinto \
-              $(echo ${KINTO_ARGS}) \
-              --namespace kintohub kintohub/kinto
-```
+  ```sh
+  kubectl create ns kintohub
+  helm repo add kintohub https://kintoproj.github.io/kinto-helm
+  helm upgrade --install kinto \
+                $(echo ${KINTO_ARGS}) \
+                --namespace kintohub kintohub/kinto
+  ```
 
-Check if KintoHub is running fine
+  Check if KintoHub is running fine
 
-Run
+  ```sh
+  kubectl get pods -n kintohub
 
-```sh
-kubectl get pods -n kintohub
-
-NAME                                                              READY   STATUS    RESTARTS   AGE
-kinto-builder-64cb848858-vjwp8                                    1/1     Running   0          56s
-kinto-core-7f9b8777c9-pwfv7                                       1/1     Running   0          56s
-kinto-dashboard-645776fc5b-mj2xz                                  1/1     Running   0          56s
-kinto-minio-5fdd9859bd-x5g7n                                      1/1     Running   0          56s
-kinto-nginx-ingress-controller-5774d868cb-mcktf                   1/1     Running   0          56s
-kinto-nginx-ingress-controller-default-backend-66549b79f8-7cmtx   1/1     Running   0          56s
-kinto-proxless-65487b797c-jf7cd                                   1/1     Running   0          56s
-```
+  NAME                                                              READY   STATUS    RESTARTS   AGE
+  kinto-builder-64cb848858-vjwp8                                    1/1     Running   0          56s
+  kinto-core-7f9b8777c9-pwfv7                                       1/1     Running   0          56s
+  kinto-dashboard-645776fc5b-mj2xz                                  1/1     Running   0          56s
+  kinto-minio-5fdd9859bd-x5g7n                                      1/1     Running   0          56s
+  kinto-nginx-ingress-controller-5774d868cb-mcktf                   1/1     Running   0          56s
+  kinto-nginx-ingress-controller-default-backend-66549b79f8-7cmtx   1/1     Running   0          56s
+  kinto-proxless-65487b797c-jf7cd                                   1/1     Running   0          56s
+  ```
 
 #### Configure and Access KintoHub
 

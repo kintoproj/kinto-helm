@@ -67,7 +67,7 @@ builder:
 
     ## Image Registry used to push images that are built using KintoHub
     ## In order for kintohub to gain access over this registry, you must configure `builder.workflow.docker` correctly.
-    IMAGE_REGISTRY_HOST: eu.gcr.io/kinto-development  ## TO BE CHANGED
+    IMAGE_REGISTRY_HOST: kintohub  ## TO BE CHANGED
 
     POLL_LOGS_INTERVAL_SECONDS: 1
     USER_FRIENDLY_BUILD_LOGS_ENABLED: false
@@ -97,13 +97,7 @@ builder:
     docker:  ## TO BE CHANGED
       ## No need to provide the rest of the information if `existingSecret` is set
       # existingSecret: kinto-builder-workflow-docker  ## in `kintohub` namespace
-      ## Using GCR
-      registry: eu.gcr.io
-      email: devaccounts@kintohub.com
-      username: _json_key
-      password: [GCR_JSON_KEY]
-      ## Using Dockerhub
-      ## Right not kaniko doesn't support v2 API -> https://github.com/GoogleContainerTools/kaniko/issues/1209
+      ## Right now, kaniko doesn't support v2 API -> https://github.com/GoogleContainerTools/kaniko/issues/1209
       # registry: https://index.docker.io/v1/
       # email: devaccounts@kintohub.com
       # username: kintohub
