@@ -80,7 +80,7 @@ builder:
     ARGO_WORKFLOW_TTL_SECONDS: 120  ## After completion, Argo automatically clean up kubernetes and delete the workflow after ARGO_WORKFLOW_TTL_SECONDS in seconds
     ARGO_WORKFLOW_MINIO_BUCKET: argo-artifacts
     ARGO_WORKFLOW_IMAGE_PULL_POLICY: IfNotPresent
-    ARGO_WORKFLOW_VOLUME_SIZE:  ## each workflow can use a private volume.
+    ARGO_WORKFLOW_VOLUME_SIZE: 1Gi  ## each workflow can use an empty dir volume -> https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
     ARGO_WORKFLOW_MEMORY_LIMIT:
     ARGO_WORKFLOW_CPU_LIMIT:
     ARGO_WORKFLOW_MEMORY_REQUEST:
