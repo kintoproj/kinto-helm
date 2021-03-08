@@ -12,17 +12,32 @@ To learn more about the release, try:
 ######################################
 
 SETUP:
+
 1.  Get the IP of your Load Balancer.
 
+    {{- if eq (index .Values "nginx-ingress-controller" "service" "type") "LoadBalancer" }}
     NOTE: It may take a few minutes for the LoadBalancer public IP to be available!
 
     You can watch the status of the service by running `kubectl get svc -n {{ .Release.Namespace }} -w {{ .Release.Name }}-nginx-ingress-controller`.
     export LB_IP=$(kubectl get service {{ .Release.Name }}-nginx-ingress-controller -n {{ .Release.Namespace }} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
     echo ${LB_IP}
+    {{- else }}
+    KintoHub Local setup.  
+    Public Access is not setup, nothing to do.
+    {{- end }}
 
 2.  Configure your DNS provider
 
+    {{- if eq (index .Values "nginx-ingress-controller" "service" "type") "LoadBalancer" }}
     Create a `A` record with `*.{{ .Values.common.domainName }}` -> `${LB_IP}`.
+    {{- else }}
+    KintoHub Local setup.  
+    Public Access is not setup.  
+    Modify your `/etc/hosts` to add your domain name:
+    - Run `sudo echo "127.0.0.1 *.{{ .Values.common.domainName }} >> /etc/hosts"`.  
+    Port forward nginx to your local machine.
+    - Run `kubectl port-forward svc/{{ .Release.Name }}-nginx-ingress-controller 80 -n {{ .Release.Namespace }}`.
+    {{- end }}
 
 3.  Access your dashboard
 
@@ -33,7 +48,7 @@ SETUP:
     Open a browser and access `http://dashboard.{{ .Values.common.domainName }}`.
     {{- end }}
   {{- else }}
-    Run the following commands in order to port-forward your kinto core and your kinto dashboard to your local laptop.
+    Run the following commands in order to port forward your kinto core and your kinto dashboard to your local machine.
 
     kubectl port-forward svc/{{ .Release.Name }}-core 8090 -n {{ .Release.Namespace }}
 
