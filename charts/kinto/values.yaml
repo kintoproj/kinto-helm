@@ -35,8 +35,10 @@ common:
 core:
   replicas: 1
 
-  image: kinto-core:v0.1.1
+  image: kinto-core:v0.2.0
   imagePullPolicy: IfNotPresent
+
+  secretKey:
 
   grpc:
     port: 8080
@@ -58,7 +60,7 @@ builder:
 
   image: kinto-builder
   imagePullPolicy: IfNotPresent
-  tag: v0.1.2
+  tag: v0.2.0
 
   port: 8080
 
@@ -106,7 +108,7 @@ builder:
 dashboard:
   replicas: 1
 
-  image: kinto-dashboard:v0.1.0
+  image: kinto-dashboard:v0.2.0
   imagePullPolicy: IfNotPresent
 
   port: 5000

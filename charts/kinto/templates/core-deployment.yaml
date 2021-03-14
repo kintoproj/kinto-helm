@@ -44,6 +44,8 @@ spec:
           value: "{{ .Values.common.ssl.enabled }}"
         - name: KINTO_CORE_NAMESPACE
           value: {{ .Release.Namespace }}
+        - name: KINTO_CORE_SECRET
+          value: {{ .Values.core.secretKey }}
         - name: KINTO_BUILDER_DOCKER_SECRET
           {{- if empty .Values.builder.workflow.docker.existingSecret }}
           value: {{ template "kinto.workflow.fullname" . }}-docker

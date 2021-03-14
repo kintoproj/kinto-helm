@@ -130,9 +130,12 @@ For example, if you want to enable SSL, you need to run "Minimum Configuration" 
 
 - **Expose KintoHub dashboard to Internet**
 
+  Also protects kinto dashboard and kinto core with an admin secret.
+
   ```sh
   export KINTO_ARGS="${KINTO_ARGS} \
   --set core.ingress.enabled=true \
+  --set core.secretKey='k1nT0!c0R3!53cr3T' \
   --set dashboard.ingress.enabled=true"
   ```
 
