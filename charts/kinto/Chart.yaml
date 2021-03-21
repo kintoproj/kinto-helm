@@ -11,7 +11,7 @@ dependencies:
   version: 8.0.10
   repository: https://helm.min.io/
 - name: proxless
-  version: 0.2.0  
+  version: 0.2.0
   repository: https://bappr.github.io/proxless
 keywords:
 - kintohub
