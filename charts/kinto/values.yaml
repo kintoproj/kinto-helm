@@ -14,7 +14,7 @@ common:
   ## ie: Kinto dashboard will be accessible through 'dashboard.oss.kintohub.net'
   ## ie: Kinto core will be accessible through 'core.oss.kintohub.net' and 'core-web.oss.kintohub.net'
   ## id: Every kinto services will be a subdomain of 'oss.kintohub.net'
-  domainName: oss.kintohub.net
+  domainName: oss.kintohub.net  ## TO BE CHANGED
   ssl:
     enabled: false
     ## Cert Manager concept: https://cert-manager.io/docs/concepts/issuer/
