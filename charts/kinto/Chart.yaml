@@ -1,7 +1,7 @@
 apiVersion: v2
 name: kinto
 home: https://www.kintohub.com/
-version: 0.5.0
+version: 0.5.1
 description: All-in-one deployment platform designed for fullstack developers
 dependencies:
 - name: nginx-ingress-controller

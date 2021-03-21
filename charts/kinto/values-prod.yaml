@@ -1,0 +1,129 @@
+common:
+  domainName: oss.kintohub.net  ## TO BE CHANGED
+  ssl:
+    enabled: true
+    issuer:
+      email: devaccounts@kintohub.com  ## TO BE CHANGED - this email will be used for every certificate generated
+      solver:
+        existingSecret: kinto-cert-manager  ## in `cert-manager` namespace
+
+core:
+  replicas: 2
+
+  secretKey: K1nt0Hub!
+
+  env:
+    LOG_LEVEL: INFO
+
+  resources:
+    requests:
+      memory: "128Mi"
+    limits:
+      memory: "128Mi"
+
+builder:
+  replicas: 2
+
+  env:
+    LOG_LEVEL: INFO
+
+    IMAGE_REGISTRY_HOST: kintohub  ## TO BE CHANGED
+
+    ARGO_WORKFLOW_VOLUME_SIZE: 10Gi
+    ARGO_WORKFLOW_MEMORY_LIMIT: 4Gi
+    ARGO_WORKFLOW_CPU_LIMIT: 2
+    ARGO_WORKFLOW_MEMORY_REQUEST: 2Gi
+    ARGO_WORKFLOW_CPU_REQUEST: 500m
+
+  resources:
+    requests:
+      memory: "128Mi"
+    limits:
+      memory: "128Mi"
+
+  workflow:
+    docker:
+      existingSecret: kinto-builder-workflow-docker  ## in `kintohub` namespace
+
+dashboard:
+  replicas: 2
+
+  resources:
+    requests:
+      memory: 64Mi
+    limits:
+      memory: 64Mi
+
+nginx-ingress-controller:
+  service:
+    type: LoadBalancer
+
+  replicaCount: 2
+  minAvailable: 2
+
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - nginx-ingress-controller
+          - key: component
+            operator: In
+            values:
+            - controller
+        topologyKey: "kubernetes.io/hostname"
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+
+  defaultBackend:
+    replicaCount: 2
+    minAvailable: 1
+
+    resources:
+      requests:
+          memory: "32Mi"
+        limits:
+          memory: "32Mi"
+
+proxless:
+  logLevel: INFO
+  replicas: 2
+
+  resources: {}
+
+  env:
+    SERVERLESS_TTL_SECONDS: 30  ## Time in seconds proxless waits before scaling down the app
+    DEPLOYMENT_READINESS_TIMEOUT_SECONDS: 30  ## Time in seconds proxless waits for the deployment to be ready when scaling up the app
+    SCALE_DOWN_CHECK_INTERVAL_SECONDS: 3000  ## The downscaler check the deployment every N seconds
+    SERVICES_INFORMER_RESYNC_INTERVAL_SECONDS: 3000  ## All services will be resynced after N seconds
+    REDIS_URL: kinto-redis-master:6379  ## Configured to use redis below
+
+  redis:
+    enabled: true
+
+minio:
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "256Mi"

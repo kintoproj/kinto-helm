@@ -36,7 +36,7 @@ SETUP:
     Modify your `/etc/hosts` to add your domain name:
     - Run `sudo echo "127.0.0.1 *.{{ .Values.common.domainName }} >> /etc/hosts"`.  
     Port forward nginx to your local machine.
-    - Run `kubectl port-forward svc/{{ .Release.Name }}-nginx-ingress-controller 80 -n {{ .Release.Namespace }}`.
+    - Run `sudo kubectl port-forward svc/{{ .Release.Name }}-nginx-ingress-controller 80 -n {{ .Release.Namespace }}`.
     {{- end }}
 
 3.  Access your dashboard
