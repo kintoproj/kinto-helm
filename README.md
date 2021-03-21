@@ -105,7 +105,8 @@ For example, if you want to enable SSL, you need to run "Minimum Configuration" 
   --set builder.workflow.docker.registry={YOUR_OWN_CONFIG} \
   --set builder.workflow.docker.email={YOUR_OWN_CONFIG} \
   --set builder.workflow.docker.username={YOUR_OWN_CONFIG} \
-  --set builder.workflow.docker.password={YOUR_OWN_CONFIG}"
+  --set builder.workflow.docker.password={YOUR_OWN_CONFIG} \
+  --set common.domainName={YOUR_OWN_CONFIG}"
   ```
 
 - **Enable public access to deployed services**
@@ -114,8 +115,7 @@ For example, if you want to enable SSL, you need to run "Minimum Configuration" 
 
   ```sh
   export KINTO_ARGS="${KINTO_ARGS} \
-  --set nginx-ingress-controller.service.type=LoadBalancer \
-  --set common.domainName={YOUR_OWN_CONFIG}"
+  --set nginx-ingress-controller.service.type=LoadBalancer"
   ```
 
 - **Enable HTTPS**
