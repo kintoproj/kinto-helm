@@ -38,6 +38,7 @@ core:
   image: kinto-core:v0.2.0
   imagePullPolicy: IfNotPresent
 
+  # existingSecret: kinto-core
   secretKey:
 
   grpc:
