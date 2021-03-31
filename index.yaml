@@ -2,6 +2,35 @@ apiVersion: v1
 entries:
   kinto:
   - apiVersion: v2
+    created: "2021-03-31T08:55:11.383130191Z"
+    dependencies:
+    - name: nginx-ingress-controller
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.3.24
+    - name: minio
+      repository: https://helm.min.io/
+      version: 8.0.10
+    - name: proxless
+      repository: https://bappr.github.io/proxless
+      version: 0.2.0
+    description: All-in-one deployment platform designed for fullstack developers
+    digest: e4865a4a6989c7d563d160c11155ce4d8d809a2b9a2eee2336d41c2acc7be6c6
+    home: https://www.kintohub.com/
+    keywords:
+    - kintohub
+    - developers
+    - devops
+    - cicd
+    maintainers:
+    - email: benjamin.apprederisse@gmail.com
+      name: bappr
+    name: kinto
+    sources:
+    - https://github.com/kintoproj
+    urls:
+    - https://github.com/kintoproj/kinto-helm/releases/download/kinto-0.5.3/kinto-0.5.3.tgz
+    version: 0.5.3
+  - apiVersion: v2
     created: "2021-03-31T07:55:45.934662361Z"
     dependencies:
     - name: nginx-ingress-controller
@@ -175,4 +204,4 @@ entries:
     urls:
     - https://github.com/kintoproj/kinto-helm/releases/download/kinto-0.4.2/kinto-0.4.2.tgz
     version: 0.4.2
-generated: "2021-03-31T07:55:45.934888677Z"
+generated: "2021-03-31T08:55:11.383166692Z"
