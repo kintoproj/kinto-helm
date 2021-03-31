@@ -10,7 +10,7 @@ common:
 core:
   replicas: 2
 
-  secretKey: K1nt0Hub!
+  existingSecret: kinto-core  ## in `kintohub` namespace
 
   env:
     LOG_LEVEL: INFO
