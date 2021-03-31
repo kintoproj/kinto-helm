@@ -42,8 +42,13 @@ spec:
           value: {{ template "kinto.core.fullname" . }}:{{ .Values.core.grpc.port }}
         - name: KINTO_CORE_OVER_TLS
           value: "false"
+        {{- if or .Values.core.secretKey .Values.core.existingSecret }}
         - name: KINTO_CORE_SECRET
-          value: {{ .Values.core.secretKey }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kinto.core.fullname" . }}
+              key: secretKey
+        {{- end }}
         - name: ARGO_WORKFLOW_DOCKER_SECRET
           {{- if empty .Values.builder.workflow.docker.existingSecret }}
           value: {{ template "kinto.workflow.fullname" . }}-docker
