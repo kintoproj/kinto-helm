@@ -35,7 +35,7 @@ common:
 core:
   replicas: 1
 
-  image: kinto-core:v0.2.0
+  image: kinto-core:v0.2.1
   imagePullPolicy: IfNotPresent
 
   # existingSecret: kinto-core
